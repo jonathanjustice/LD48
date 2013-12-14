@@ -1,9 +1,9 @@
 ﻿package{
+	import flash.events.MouseEvent;
+	import flash.events.*;
 	import flash.display.MovieClip;
-	public class Follower extends MovieClip{
+	public class Follower extends default_screen{
 		private var walkTarget:int=0;
-		private var maxWalkSpeed:int=2;
-		private var minWalkSpeed:int=-2;
 		private var minDistanceBetweenOldAndNewTargets:int=35;
 		private var maxDistanceBetweenOldAndNewTargets:int=400;
 		private var walking:Boolean=false;
@@ -16,13 +16,51 @@
 		public function Follower(){
 			
 			setUp();
+			initialSetup();
+			
 		}
 		
-		private function setUp():void{
+		private function initialSetup():void{
 			this.x = Math.round(Math.random()* 780);
 			this.y = 450;
+			maxWalkSpeed = 2;
+			minWalkSpeed = -2;
 			selectNewLerpMultiplier();
 			pauseWalking();
+		}
+		
+		public override function clickHandler(event:MouseEvent):void {
+			trace(event.target.name);
+			switch (event.target.name) {
+				case "hitbox":
+					trace("clicked follower");
+					setActiveState(Main.getActionIndicator_mouse().getActiveState());
+					break;
+			}
+		}
+		
+		public function setActiveState(newState:String):void{
+			trace(newState);
+			switch (newState){
+				case "null":
+					trace("newState passed was null");
+					break;
+				case "NONE":
+					trace("newState passed was none");
+					break;
+				case "FIRE":
+					trace("newState passed was FIRE");
+					break;
+				case "METEOR":
+					trace("newState passed was METEOR");
+					break;
+				case "LOVE":
+					trace("newState passed was LOVE");
+					break;
+				case "LIFT":
+					trace("newState passed was LIFT");
+					break;
+			}
 		}
 		
 		private function anim_eyes(animLabel:String):void{
@@ -44,7 +82,6 @@
 			if(Math.abs(newTarget-walkTarget) < minDistanceBetweenOldAndNewTargets || Math.abs(newTarget-walkTarget) > maxDistanceBetweenOldAndNewTargets){
 				selectNewWalkTarget();
 			}else{
-				
 				walkTarget = Math.abs(Math.random()* 800);
 			}
 		}
@@ -60,7 +97,6 @@
 		}
 		
 		private function pauseWalking():void{
-			//trace("pauseeWalking");
 			selectNewPauseTime();
 			walking = false;
 			anim_eyes("center")
@@ -77,29 +113,12 @@
 			}
 			
 			if(walking){
-				//trace("walking");
 				var lerpAmount:Number =  (walkTarget-this.x)*multiplier;
-				//trace(multiplier);
 				if(this.x == walkTarget){
 					pauseWalking();
 				}
-				if(lerpAmount < minWalkSpeed){
-					//lerpAmount = minWalkSpeed;
-				}
-				if(lerpAmount > maxWalkSpeed){
-					//lerpAmount = maxWalkSpeed;
-				}
-				if(lerpAmount==0){
-					trace("lerp is 0");
-					if(walkTarget < this.x){
-					lerpAmount =-.01;
-					}
-					if(walkTarget > this.x){
-						lerpAmount =.01;
-					}
-				}
 				this.x += lerpAmount;
-				if(Math.abs(walkTarget-this.x) < 10){
+				if(Math.abs(walkTarget-this.x) < 1){
 					pauseWalking();
 				}
 				
