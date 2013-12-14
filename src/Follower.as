@@ -2,16 +2,16 @@
 	import flash.display.MovieClip;
 	public class Follower extends MovieClip{
 		private var walkTarget:int=0;
-		private var maxWalkSpeed:int=5;
-		private var minWalkSpeed:int=-5;
+		private var maxWalkSpeed:int=2;
+		private var minWalkSpeed:int=-2;
 		private var minDistanceBetweenOldAndNewTargets:int=35;
 		private var maxDistanceBetweenOldAndNewTargets:int=400;
 		private var walking:Boolean=false;
 		private var pauseTime:int=0;
 		private var maxPauseTime:int=900;
 		private var minPauseTime:int=90;
-		private var lerpMin:Number=.01;
-		private var lerpMax:Number=.9;
+		private var lerpMin:Number=.001;
+		private var lerpMax:Number=.01;
 		private var multiplier:Number=0;
 		public function Follower(){
 			
@@ -19,7 +19,7 @@
 		}
 		
 		private function setUp():void{
-			this.x = Math.round(Math.random()* 800);
+			this.x = Math.round(Math.random()* 780);
 			this.y = 450;
 			selectNewLerpMultiplier();
 			pauseWalking();
@@ -79,21 +79,23 @@
 			if(walking){
 				//trace("walking");
 				var lerpAmount:Number =  (walkTarget-this.x)*multiplier;
+				//trace(multiplier);
 				if(this.x == walkTarget){
 					pauseWalking();
 				}
 				if(lerpAmount < minWalkSpeed){
-					lerpAmount = minWalkSpeed;
+					//lerpAmount = minWalkSpeed;
 				}
 				if(lerpAmount > maxWalkSpeed){
-					lerpAmount = maxWalkSpeed;
+					//lerpAmount = maxWalkSpeed;
 				}
 				if(lerpAmount==0){
+					trace("lerp is 0");
 					if(walkTarget < this.x){
-					lerpAmount =-.25;
+					lerpAmount =-.01;
 					}
 					if(walkTarget > this.x){
-						lerpAmount =.25;
+						lerpAmount =.01;
 					}
 				}
 				this.x += lerpAmount;
