@@ -4,6 +4,8 @@
 	import flash.events.*;
 	public class ActionIndicator_mouse extends default_screen{
 		private var activeState:String;
+		private var mouseLerpX:Number=.25;
+		private var mouseLerpY:Number=.25;
 		public function ActionIndicator_mouse(){
 			setUp();
 			stop();
@@ -26,27 +28,27 @@
 		}
 		
 		public function setActiveState(newState:String):void{
-			trace(newState);
+			//trace(newState);
 			activeState = newState;
 			gotoAndStop(newState);
 			switch (newState){
 				case "null":
-					trace("newState passed was null");
+					//trace("newState passed was null");
 					break;
 				case "NONE":
-					trace("newState passed was none");
+					//trace("newState passed was none");
 					break;
 				case "FIRE":
-					trace("newState passed was FIRE");
+					//trace("newState passed was FIRE");
 					break;
 				case "METEOR":
-					trace("newState passed was METEOR");
+					//trace("newState passed was METEOR");
 					break;
 				case "LOVE":
-					trace("newState passed was LOVE");
+					//trace("newState passed was LOVE");
 					break;
 				case "LIFT":
-					trace("newState passed was LIFT");
+					//trace("newState passed was LIFT");
 					break;
 			}
 		}
@@ -55,14 +57,9 @@
 			//trace("arrange");
 			updateScreenLocation();
 			stopAllButtonsFromAnimating();
-			setMultiplier(.25);
+			setMultiplier(mouseLerpX,mouseLerpY);
 			this.mouseEnabled=false;
 			this.mouseChildren=false;
-		}
-		
-		public function setMouseCoordinates(newX:Number,newY:Number):void{
-			desiredX = newX;
-			desiredY = newY;
 		}
 		
 		public function updateScreenLocation():void{

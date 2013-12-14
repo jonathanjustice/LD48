@@ -3,10 +3,14 @@
 	import flash.events.MouseEvent;
 	import flash.events.*;
 	public class ActionMenu extends default_screen{
+		private var screenLerpX:Number=.7;
+		private var screenLerpY:Number=.7;
 		public function ActionMenu(){
+			this.x = Main.theStage.stageWidth+this.width+50;
 			setUp();
 			stop();
 			arrangeScreen();
+			setMultiplier(screenLerpX,screenLerpY);
 		}
 		
 		private function arrangeScreen():void{

@@ -15,25 +15,25 @@
 			trace(newAction);
 			switch (newAction){
 				case "null":
-					trace("Action passed was null");
+					//trace("Action passed was null");
 					break;
 				case "NONE":
-					trace("Action passed was none");
+					//trace("Action passed was none");
 					break;
 				case "FIRE":
-					trace("Action passed was FIRE");
+					//trace("Action passed was FIRE");
 					Main.getActionIndicator_mouse().setActiveState(newAction);
 					break;
 				case "METEOR":
-					trace("Action passed was METEOR");
+					//trace("Action passed was METEOR");
 					Main.getActionIndicator_mouse().setActiveState(newAction);
 					break;
 				case "LOVE":
-					trace("Action passed was LOVE");
+					//trace("Action passed was LOVE");
 					Main.getActionIndicator_mouse().setActiveState(newAction);
 					break;
 				case "LIFT":
-					trace("Action passed was LIFT");
+					//trace("Action passed was LIFT");
 					Main.getActionIndicator_mouse().setActiveState(newAction);
 					break;
 			}

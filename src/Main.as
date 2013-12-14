@@ -4,7 +4,7 @@
 	import flash.geom.*;
 	import flash.events.MouseEvent;
 	public class Main extends MovieClip{
-		private var followerManager:FollowerManager;
+		public static var followerManager:FollowerManager;
 		public static var actionManager;ActionManager;
 		public static var actionIndicator_mouse:ActionIndicator_mouse;
 		public static var theStage:Object;
@@ -48,8 +48,16 @@
 			return actionManager;
 		}
 		
+		public static function getFollowerManager():FollowerManager{
+			return followerManager;
+		}
+		
 		public static function getActionIndicator_mouse():ActionIndicator_mouse{
 			return actionIndicator_mouse;
+		}
+		
+		public static function requestMouseCoordinates(follower:MovieClip):void{
+			follower.setMouseCoordinates(theStage.mouseX,theStage.mouseY);
 		}
 		
 		/*

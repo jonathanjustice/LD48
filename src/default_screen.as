@@ -12,32 +12,32 @@
 		private var hasBlocker:Boolean = false;
 		public var desiredX:int=0;
 		public var desiredY:int=0;
-		public var minWalkSpeed:int=5;
-		public var maxWalkSpeed:int=5;
-		private var multiplier:Number=.1;
+		private var multiplierX:Number=.1;
+		private var multiplierY:Number=.1;
 		private var lerping:Boolean=true;
 		
 		public function Screen_Default(){			
 			setUp();
 		}
 		
-		public function setMultiplier(newAmount:Number):void{
-			multiplier = newAmount;
+		public function setMultiplier(newAmountX:Number,newAmountY:Number):void{
+			multiplierX = newAmountX;
+			multiplierY = newAmountY;
 		}
 		
 		public function lerpToPosition():void{
 			if(lerping){
-				var lerpAmountX:Number = (desiredX-this.x)*multiplier;
+				var lerpAmountX:Number = (desiredX-this.x)*multiplierX;
 				this.x += lerpAmountX;
-				var lerpAmountY:Number = (desiredY-this.y)*multiplier;
+				var lerpAmountY:Number = (desiredY-this.y)*multiplierY;
 				this.y += lerpAmountY;
-				if(Math.abs(desiredX-this.x) < 1 && Math.abs(desiredY-this.y)){
+				/*if(Math.abs(desiredX-this.x) < 1 && Math.abs(desiredY-this.y)){
 					this.x = desiredX;
 					this.y = desiredY;
 					lerpAmountX = 0;
 					lerpAmountY = 0;
 					pauseLerping();
-				}
+				}*/
 			}
 			if(Math.abs(desiredX-this.x) > 0){
 				resumeLerping();
@@ -189,7 +189,10 @@
 			Main.theStage.addChild(this);
 		}
 		
-		
+		public function setMouseCoordinates(newX:Number,newY:Number):void{
+			desiredX = newX;
+			desiredY = newY;
+		}
 		
 		//removing the screen
 		public function removeThisScreen():void{
