@@ -5,6 +5,8 @@
 	import flash.geom.Point;
 	public class Follower extends default_screen{
 		private var walkTarget:int=0;
+		private var maxFireTime:int=300;
+		private var fireTime:int=0;
 		private var minDistanceBetweenOldAndNewTargets:int=35;
 		private var maxDistanceBetweenOldAndNewTargets:int=400;
 		
@@ -156,7 +158,9 @@
 					//trace("newState passed was none");
 					break;
 				case "FIRE":
+					anim_fire();
 					trace("newState passed was FIRE");
+					fireTime=0;
 					Main.getFollowerManager().abortCurrentBubble(this);
 					isSpeechAllowed=true;
 					triggerNewSpeechBubble();
@@ -204,6 +208,11 @@
 		private function anim_lifted():void{
 			//trace("play lifted");
 			this.gotoAndPlay("lifted");
+		}
+		
+		private function anim_fire():void{
+			//trace("play lifted");
+			this.gotoAndPlay("fire");
 		}
 		
 		private function anim_walk():void{
@@ -302,7 +311,7 @@
 		private function chanceToSpeak():void{
 			var chance = Math.round(Math.random()*100000);
 			//trace(chance);
-			if(chance > 99985){
+			if(chance > 99995){
 				triggerNewSpeechBubble();
 			}
 		}
@@ -379,6 +388,11 @@
 					selectNewWalkTarget();
 				}
 			}
+			if(fireTime > maxFireTime){
+				setBehaviorState("WALK");
+				this.particleSystem.playMode("NONE");
+			}
+			fireTime++;
 		}
 		
 		public function lift():void{

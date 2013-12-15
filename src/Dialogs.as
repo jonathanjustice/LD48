@@ -55,7 +55,7 @@
 							]
 			fire_worship = ["Leader's love burns me.",
 							"Leader blesses me with fire.",
-							"The flames are Leader's ove!",
+							"The flames are Leader's love!",
 							"Leader gives me fire!",
 							"I brun with Leader's love",
 							"I am Leader's torch!",

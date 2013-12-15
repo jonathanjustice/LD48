@@ -3,7 +3,7 @@
 	import flash.geom.Point;
 	public class Particle extends MovieClip{
 		private var timeExisted:int=0;
-		private var lifeTime:int=40;
+		private var lifeTime:int=44;
 		private var velocity:Point = new Point();
 		private var friction:Number = 0.95;
 		public var gravity:Number=0;

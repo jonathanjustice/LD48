@@ -10,6 +10,9 @@
 		private var spawnDelay:int=5;
 		private var spawnDelayCounter:int=0;
 		private var myFollower:MovieClip;
+		private var lifeTime:int=300;
+		private var timeExisted:int=0;
+		private var isSpawningEnabled=true;
 		public function ParticleSystem(follower:MovieClip){
 			myFollower = follower;
 		}
@@ -21,10 +24,15 @@
 		
 		public function enableParticles():void{
 			this.addEventListener(Event.ENTER_FRAME, spawnParticles);
+			isSpawningEnabled = true;
 		}
 		
 		public function disableParticles():void{
 			this.removeEventListener(Event.ENTER_FRAME, spawnParticles);
+		}
+		
+		public function disableSpawning():void{
+			isSpawningEnabled=false;
 		}
 		
 		private function spawnParticles(e:Event):void{
@@ -36,6 +44,9 @@
 				}
 			}
 			//trace("particleMode",particleMode);
+			if(timeExisted > lifeTime){
+				//disableSpawning();
+			}
 			if(spawnDelayCounter >= spawnDelay){
 				spawnDelayCounter=0;
 				switch(particleMode){
@@ -72,7 +83,10 @@
 						break;
 				}
 			}
+			//if(isSpawningEnabled){
+			//timeExisted++;
 			spawnDelayCounter++;
+			//}
 		}
 	}
 }
