@@ -361,7 +361,12 @@
 			}else{
 				this.y = groundPlane;
 				resetGravity();
-				setBehaviorState("WALK");
+				if(running){
+					setBehaviorState("FIRE");
+				}
+				if(walking){
+					setBehaviorState("WALK");
+				}
 			}
 		}
 		
