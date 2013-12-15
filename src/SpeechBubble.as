@@ -4,7 +4,7 @@
 	public class SpeechBubble extends MovieClip{
 		private var bubbleText:String = "";
 		private var typeCounter:int=0;
-		private var typeCounterMax:int=4;
+		private var typeCounterMax:int=1;
 		private var typeIncrement:int=0;
 		private var lettersArray:Array = new Array();
 		private var myFollower:MovieClip;
@@ -23,6 +23,7 @@
 		}
 		
 		public function updateLoop():void{
+			
 			this.x = myFollower.x;
 			this.y = myFollower.y;
 		}
@@ -60,10 +61,18 @@
 					if(this.scaleX < .05){
 						//trace("too small");
 						this.removeEventListener(Event.ENTER_FRAME, typeText);	
-						markedForDeletion = true;
+						markForDeletion();
 					}
 				}
 			}
+		}
+		
+		public function setTimeExistedToMaxLifeTime():void{
+			timeExisted = lifeTime;
+		}
+		
+		public function markForDeletion():void{
+			markedForDeletion = true;
 		}
 		
 		public function getMarkedForDeletion():Boolean{

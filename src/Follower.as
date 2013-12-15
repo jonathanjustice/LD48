@@ -33,6 +33,8 @@
 		private var mood:String="";
 		private var dialog:String="";
 		private var isSpeechAllowed:Boolean=true;
+		private var activeBubbles:int=0;
+		private var abortCurrentBubble:Boolean=false;
 		public function Follower(){
 			setUp();
 			initialSetup();
@@ -57,7 +59,7 @@
 				happiness = "_worship";
 			}
 			mood = behaviorState + happiness;
-			dialog = Main.getDialogs().selectDialog("walk_worship");
+			dialog = Main.getDialogs().selectDialog(mood);
 			//trace("dialog:",dialog);
 		}
 		
@@ -65,8 +67,11 @@
 			isSpeechAllowed = true;
 		}
 		
+		
+		
 		private function triggerNewSpeechBubble():void{
 			if(isSpeechAllowed){
+				activeBubbles += 1;
 				calculateMood();
 				Main.getFollowerManager().createNewSpeechBubble(this,dialog);
 				isSpeechAllowed=false;
@@ -150,6 +155,9 @@
 					//trace("newState passed was LIFT");
 					anim_lifted();
 					addReleaseHandler();
+					
+					Main.getFollowerManager().abortCurrentBubble(this);
+					isSpeechAllowed=true;
 					triggerNewSpeechBubble();
 					break;
 				case "FALL":
@@ -269,8 +277,7 @@
 		private function chanceToSpeak():void{
 			var chance = Math.round(Math.random()*100000);
 			//trace(chance);
-			if(chance > 99995){
-				
+			if(chance > 99985){
 				triggerNewSpeechBubble();
 			}
 		}

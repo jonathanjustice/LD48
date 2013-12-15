@@ -44,6 +44,14 @@
 			trace("testFunc");
 		}
 		
+		public function abortCurrentBubble(follower:MovieClip):void{
+			for(var i:int=0;i<speechBubbles.length;i++){
+				if(speechBubbles[i].getFollower()==follower){
+					speechBubbles[i].setTimeExistedToMaxLifeTime();
+				}
+			}
+		}
+		
 		public function createNewSpeechBubble(follower:MovieClip,dialog:String="slam jam"):void{
 			var index:int = followers.indexOf(follower);
 			var speechBubble = new SpeechBubble(follower,dialog);
