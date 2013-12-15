@@ -17,6 +17,7 @@
 		private var maxDistanceBetweenOldAndNewTargets_fire:int=50;
 		private var walking:Boolean=false;
 		private var running:Boolean=false;
+		private var beingTossed:Boolean=false;
 		private var pauseTime:int=0;
 		private var maxPauseTime:int=900;
 		private var minPauseTime:int=90;
@@ -46,6 +47,7 @@
 		private var activeBubbles:int=0;
 		private var abortCurrentBubble:Boolean=false;
 		private var particleSystem:ParticleSystem;
+		private var maxYVelocity:int=-20;
 		public function Follower(){
 			setUp();
 			initialSetup();
@@ -148,19 +150,24 @@
 		}
 		
 		public function setBehaviorState(newState:String):void{
-			//trace(newState);
+			//trace("newState passed was", newState);
 			behaviorState = newState;
 			switch (newState){
 				case "null":
-					//trace("newState passed was null");
 					break;
 				case "NONE":
-					//trace("newState passed was none");
+					particleSystem.playMode(behaviorState);
+					break;
+				case "EXPLODED":
+					anim_exploded();
+					particleSystem.playMode(behaviorState);
+					break;
+				case "SQUISHED":
+					anim_squished();
 					particleSystem.playMode(behaviorState);
 					break;
 				case "FIRE":
 					anim_fire();
-					trace("newState passed was FIRE");
 					fireTime=0;
 					Main.getFollowerManager().abortCurrentBubble(this);
 					isSpeechAllowed=true;
@@ -174,23 +181,25 @@
 					selectNewWalkTarget();
 					break;
 				case "COIN":
-				anim_coin();
+					anim_coin();
 					running=false;
 					walking=false;
 					Main.getFollowerManager().abortCurrentBubble(this);
 					isSpeechAllowed=true;
 					triggerNewSpeechBubble();
 					
-					//trace("newState passed was METEOR");
 					break;
 				case "METEOR":
+					anim_meteorLook();
+					isSpeechAllowed=true;
+					triggerNewSpeechBubble();
 					//trace("newState passed was METEOR");
+					Main.getFollowerManager().createNewMeteor(this);
+
 					break;
 				case "LOVE":
-					//trace("newState passed was LOVE");
 					break;
 				case "LIFT":
-					//trace("newState passed was LIFT");
 					anim_lifted();
 					addReleaseHandler();
 					
@@ -199,17 +208,19 @@
 					triggerNewSpeechBubble();
 					break;
 				case "FALL":
-					//trace("newState passed was FALL");
 					anim_falling();
-					addReleaseHandler();
 					break;
 				case "WALK":
 					minDistanceBetweenOldAndNewTargets = minDistanceBetweenOldAndNewTargets_walk;
 					maxDistanceBetweenOldAndNewTargets = maxDistanceBetweenOldAndNewTargets_walk;
-					//trace("newState passed was WALK");
 					anim_walk();
 					break;
 			}
+		}
+		
+		private function anim_meteorLook():void{
+			this.gotoAndPlay("meteor");
+			this.eyes.gotoAndPlay("meteor");
 		}
 		
 		private function anim_eyes(animLabel:String):void{
@@ -217,17 +228,22 @@
 		}
 		
 		private function anim_lifted():void{
-			//trace("play lifted");
 			this.gotoAndPlay("lifted");
 		}
 		
+		private function anim_squished():void{
+			this.gotoAndPlay("squished");
+		}
+		
+		private function anim_exploded():void{
+			this.gotoAndPlay("exploded");
+		}
+		
 		private function anim_coin():void{
-			//trace("play lifted");
 			this.gotoAndPlay("coin");
 		}
 		
 		private function anim_fire():void{
-			//trace("play lifted");
 			this.gotoAndPlay("fire");
 		}
 		
@@ -236,36 +252,27 @@
 		}
 		
 		private function anim_falling():void{
-			//this.gotoAndStop("falling");
 		}
 		
 		private function selectNewLerpMultiplier(currentBehaviorState:String):void{
 			switch (currentBehaviorState){
 				case "null":
-					//trace("newState passed was null");
 					break;
 				case "NONE":
-					//trace("newState passed was none");
 					break;
 				case "FIRE":
-					//trace("newState passed was FIRE");
 					setMultiplier(multiplier_fire,multiplier_fire);
 					break;
 				case "COIN":
-					//trace("newState passed was FIRE");
 					break;
 				case "METEOR":
-					//trace("newState passed was METEOR");
 					break;
 				case "LOVE":
-					//trace("newState passed was LOVE");
 					break;
 				case "LIFT":
-					//trace("newState passed was LIFT");
 					setMultiplier(multiplier_lift_X,multiplier_lift_Y);
 					break;
 				case "WALK":
-					//trace("newState passed was WALK");
 					multiplier = lerpMin + Math.random()* lerpMax;
 					setMultiplier(multiplier,0);
 					break;
@@ -337,7 +344,6 @@
 		
 		private function chanceToSpeak():void{
 			var chance = Math.round(Math.random()*100000);
-			//trace(chance);
 			if(chance > 99995){
 				triggerNewSpeechBubble();
 			}
@@ -346,13 +352,11 @@
 		private function calculatePreviousPositions():void{
 			previousPosition.x = this.x;
 			previousPosition.y = this.y;
-			//trace("prev",previousPosition);
 		}
 		
 		private function calculateVelocity():void{
 			velocity.x = this.x-previousPosition.x;
 			velocity.y = this.y-previousPosition.y;
-			//trace("vel",velocity);
 		}
 		
 		public function getVelocity():Point{
@@ -370,11 +374,31 @@
 			
 		
 		private function setScreenBounds():void{
-				screenBounds = Main.theStage.stageWidth - (Main.theStage.stageWidth-Main.originalStageX)/2;
+			screenBounds = Main.theStage.stageWidth - (Main.theStage.stageWidth-Main.originalStageX)/2;
+		}
+		
+		public function startBounce():void{
+			
+		}
+		
+		public function startToss(tossValue:Number):void{
+			this.y-=2;
+			velocity.x =-tossValue/50;
+			velocity.y = -.3*Math.abs(800/tossValue);
+			if(behaviorState != "SQUISHED" && behaviorState != "COIN" && behaviorState != "EXPLODED"){
+				var setOnFireChance:Number = Math.random()*10;
+				if(setOnFireChance>9){
+					setBehaviorState("FIRE");
+				}
+				setBehaviorState("FALL");
+			}
+			
 		}
 		
 		private function fall():void{
-			
+			if(velocity.y < maxYVelocity){
+				velocity.y = maxYVelocity;
+			}
 			if(this.y < groundPlane){
 				if(this.x > screenBounds){
 					velocity.x*=-1;
@@ -390,9 +414,14 @@
 				resetGravity();
 				if(running){
 					setBehaviorState("FIRE");
-				}
-				if(walking){
+				}else if(walking){
 					setBehaviorState("WALK");
+					selectNewWalkTarget();
+					resumeWalking();
+				}else{
+					setBehaviorState("WALK");
+					selectNewWalkTarget();
+					resumeWalking();
 				}
 			}
 		}
@@ -407,23 +436,19 @@
 		
 		private function onCoin():void{
 			if(this.currentLabel == "coinPop"){
-				//trace("coinEnd");
 				particleSystem.playMode(behaviorState);
 			}
 			if(this.currentLabel == "coinEnd"){
 				
-				setBehaviorState("NONE");
+				setBehaviorState("EXPLODED");
 			}
 		}
 		
 		private function onFire():void{
-			//trace("onfire");
 			chanceToSpeak();
-			//anim_walk();
 			if(running){
 				var lerpAmount:Number =  (walkTarget-this.x)*multiplier_fire;
 				if(this.x == walkTarget){
-					//pauseWalking();
 					selectNewWalkTarget();
 				}
 				this.x += lerpAmount;

@@ -27,6 +27,14 @@
 			isSpawningEnabled = true;
 		}
 		
+		public function abortAll():void{
+			disableParticles();
+			for(var i:int=0;i<fireParticles.length;i++){
+				Main.theStage.removeChild(fireParticles[i]);
+				fireParticles.splice(i,1);
+			}
+		}
+		
 		public function disableParticles():void{
 			this.removeEventListener(Event.ENTER_FRAME, spawnParticles);
 		}
@@ -63,6 +71,25 @@
 						Main.getStage().addChildAt(p_F,index);
 						fireParticles.push(p_F);
 						break;
+					case "METEOR_FALL":
+						for (var d:int=0;d<15;d++){
+							var p_F_MF_f:P_F_MF = new P_F_MF();
+							p_F_MF_f.defineSpawnPoint(myFollower.getLocation(),myFollower.getVelocity(),myFollower.getScale());
+							p_F_MF_f.fireMode("trail");
+							p_F_MF_f.setGroundPlane(myFollower.getDesiredY());
+							Main.getStage().addChildAt(p_F_MF_f,index);
+							fireParticles.push(p_F_MF_f);
+						}
+						for (var f:int=0;f<15;f++){
+							var p_F_MF_r:P_F_MF = new P_F_MF();
+							p_F_MF_r.defineSpawnPoint(myFollower.getLocation(),myFollower.getVelocity(),myFollower.getScale());
+							p_F_MF_f.setGroundPlane(myFollower.getDesiredY());
+							p_F_MF_r.fireMode("ball");
+							Main.getStage().addChildAt(p_F_MF_r,index);
+							fireParticles.push(p_F_MF_r);
+						}
+						break;
+						
 					case "COIN":
 						for (var b:int=0;b<3;b++){
 							var p_C:P_C = new P_C();

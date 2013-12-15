@@ -2,21 +2,32 @@
 	import flash.display.MovieClip;
 	import flash.geom.Point;
 	public class Particle extends MovieClip{
-		private var timeExisted:int=0;
-		private var lifeTime:int=44;
-		private var velocity:Point = new Point();
+		public  var timeExisted:int=0;
+		public var lifeTime:int=44;
+		public var velocity:Point = new Point();
 		private var friction:Number = 0.95;
 		public var gravity:Number=0;
 		public var gravityIncrement:Number=.05;
 		private var markedForDeletion:Boolean=false;
-		private var scale:Number=0;
+		public var scale:Number=0;
 		public var rotationValue:Number=0;
+		public var isActive:Boolean=true;
+		public var initialSpawnVel:Point=new Point();
 		public function Particle(){
 			
 		}
 		
+		public function setLifeTime():void{
+			//lifeTime = 44;
+		}
+		
+		public function setIsActive(newState:Boolean):void{
+			isActive = newState;
+		}
 		
 		public function defineSpawnPoint(spawnLocation:Point,spawnVelocity:Point,spawnScale:Number):void{
+			initialSpawnVel = spawnVelocity;
+			setLifeTime();
 			setRotationValue();
 			setGravity();
 			addSomeRandom();
@@ -53,17 +64,27 @@
 		}
 		
 		public function updateLoop():void{
-			this.rotation+=rotationValue;
-			gravity+=gravityIncrement;
-			velocity.y+=gravity;
-			//trace("particle" );
-			this.x+=velocity.x*friction*scale;
-			this.y+=velocity.y*friction*scale;
-			doSpecial();
-			timeExisted++;
-			if(timeExisted > lifeTime){
-				markForDeletion();
+			if(isActive){
+				this.rotation+=rotationValue;
+				gravity+=gravityIncrement;
+				velocity.y+=gravity;
+				//trace("particle" );
+				this.x+=velocity.x*friction*scale;
+				this.y+=velocity.y*friction*scale;
+				doSpecial();
+				timeExisted++;
+				if(timeExisted > lifeTime){
+					//trace("timeExisted > lifeTime");
+					//trace("actual lifeTime:",lifeTime);
+					markForDeletion();
+				}
+			}else if(!isActive){
+				doSpecialInactiveStuff();
 			}
+		}
+		
+		public function doSpecialInactiveStuff():void{
+			//child classes do this
 		}
 		
 		public function doSpecial():void{
@@ -71,6 +92,7 @@
 		}
 		
 		public function markForDeletion():void{
+			//trace("markForDeletion()");
 			markedForDeletion = true;
 		}
 		

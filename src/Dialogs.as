@@ -36,6 +36,15 @@
 		private var coin_furious:Array = new Array();
 		private var coin_dying:Array = new Array();
 		private var coin_crazy:Array = new Array();
+		
+		private var meteor_worship:Array = new Array();
+		private var meteor_happy:Array = new Array();
+		private var meteor_indifferent:Array = new Array();
+		private var meteor_upset:Array = new Array();
+		private var meteor_angry:Array = new Array();
+		private var meteor_furious:Array = new Array();
+		private var meteor_dying:Array = new Array();
+		private var meteor_crazy:Array = new Array();
 		public function Dialogs(){
 			defineDialogs();
 		}
@@ -80,6 +89,16 @@
 							"Leader makes my heaven golden.",
 							"Leader paves the streets with gold!",
 							]
+			meteor_worship = ["Leader gives me the sky!",
+							"Leader brings the sky to me!",
+							"Leader makes the heavens reach to me.",
+							"A star is Leader's gift to me.",
+							"Leader's glowing love approaches!",
+							"I see Leader!",
+							"Leader is coming for me!",
+							"A gift of love from Leader",
+							]
+			
 		}
 		
 		public function selectDialog(arrayName:String):String{
@@ -183,6 +202,31 @@
 					break;
 				case "COIN_crazy":
 					activeArray = coin_crazy;
+					break;
+					
+				case "METEOR_worship":
+					activeArray = meteor_worship;
+					break;
+				case "METEOR_happy":
+					activeArray = meteor_happy;
+					break;
+				case "METEOR_indifferent":
+					activeArray = meteor_indifferent;
+					break;
+				case "METEOR_upset":
+					activeArray = meteor_upset;
+					break;
+				case "METEOR_angry":
+					activeArray = meteor_angry;
+					break;
+				case "METEOR_furious":
+					activeArray = meteor_furious;
+					break;
+				case "METEOR_dying":
+					activeArray = meteor_dying;
+					break;
+				case "METEOR_crazy":
+					activeArray = meteor_crazy;
 					break;
 			}
 			

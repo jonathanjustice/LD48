@@ -5,7 +5,10 @@
 		private var followers:Array = new Array();
 		private var leaderStatues:Array = new Array();
 		private var speechBubbles:Array = new Array();
+		private var meteors:Array = new Array();
 		private var maxFollowers:int=50;
+		private var startToss:Boolean=false;
+		private var startBounce:Boolean=false;
 		public function FollowerManager(){
 			//setUp();
 		}
@@ -24,7 +27,26 @@
 			addEventListener(Event.ENTER_FRAME, updateLoop);
 		}
 		
+		public function tossAllFollowers(meteor:MovieClip):void{
+			startToss = true;
+			for(var a:int=0;a<followers.length;a++){
+				//trace(a);
+				var dist:Number = meteor.x- followers[a].x;
+				followers[a].startToss(dist);
+			}
+		}
+		
+		public function bounceAllFollowers():void{
+			startBounce=true;
+			for(var a:int=0;a<followers.length;a++){
+				//trace(a);
+				followers[a].startBounce();
+			}
+		}
+		
+		
 		private function updateLoop(e:Event):void{
+			
 			for(var a:int=0;a<followers.length;a++){
 				//trace(a);
 				followers[a].updateLoop();
@@ -36,6 +58,15 @@
 					speechBubbles[b].getFollower().allowSpeechBubble();
 					Main.theStage.removeChild(speechBubbles[b]);
 					speechBubbles.splice(b,1);
+				}
+			}
+			for(var c:int=0;c<meteors.length;c++){
+				//trace(c);
+				meteors[c].updateLoop();
+				if(meteors[c].getMarkedForDeletion() == true){
+					//meteors[c].
+					Main.theStage.removeChild(meteors[c]);
+					meteors.splice(c,1);
 				}
 			}
 		}
@@ -50,6 +81,19 @@
 					speechBubbles[i].setTimeExistedToMaxLifeTime();
 				}
 			}
+		}
+		
+		public function createNewMeteor(follower:MovieClip):void{
+			var index:int = followers.indexOf(follower);
+			var meteor = new P_METEOR();
+			meteor.setFollower(follower);
+			meteor.defineSpawnPoint(follower.getLocation(),follower.getVelocity(),follower.getScale());
+			meteors.push(meteor);
+			
+			var dislpayIndex:int = follower.parent.getChildIndex(follower);
+			Main.getStage().addChildAt(meteor,dislpayIndex);
+			//Main.theStage.addChild(speechBubble);
+			//trace("bubble");
 		}
 		
 		public function createNewSpeechBubble(follower:MovieClip,dialog:String="slam jam"):void{
