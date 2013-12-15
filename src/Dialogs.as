@@ -18,6 +18,15 @@
 		private var lift_furious:Array = new Array();
 		private var lift_dying:Array = new Array();
 		private var lift_crazy:Array = new Array();
+		
+		private var fire_worship:Array = new Array();
+		private var fire_happy:Array = new Array();
+		private var fire_indifferent:Array = new Array();
+		private var fire_upset:Array = new Array();
+		private var fire_angry:Array = new Array();
+		private var fire_furious:Array = new Array();
+		private var fire_dying:Array = new Array();
+		private var fire_crazy:Array = new Array();
 		public function Dialogs(){
 			defineDialogs();
 		}
@@ -43,6 +52,15 @@
 							"Carry me to the heavens oh great Leader.",
 							"Praise Leader, I never wish to touch the ground.",
 							"The winds of the Leader lift me high."
+							]
+			fire_worship = ["Leader's love burns me.",
+							"Leader blesses me with fire.",
+							"The flames are Leader's ove!",
+							"Leader gives me fire!",
+							"I brun with Leader's love",
+							"I am Leader's torch!",
+							"I am Leader's light!",
+							"I am bestowed with fire. Leader chooses me."
 							]
 		}
 		
@@ -97,6 +115,31 @@
 					break;
 				case "LIFT_crazy":
 					activeArray = lift_crazy;
+					break;
+				
+				case "FIRE_worship":
+					activeArray = fire_worship;
+					break;
+				case "FIRE_happy":
+					activeArray = fire_happy;
+					break;
+				case "FIRE_indifferent":
+					activeArray = fire_indifferent;
+					break;
+				case "FIRE_upset":
+					activeArray = fire_upset;
+					break;
+				case "FIRE_angry":
+					activeArray = fire_angry;
+					break;
+				case "FIRE_furious":
+					activeArray = fire_furious;
+					break;
+				case "FIRE_dying":
+					activeArray = fire_dying;
+					break;
+				case "FIRE_crazy":
+					activeArray = fire_crazy;
 					break;
 			}
 			

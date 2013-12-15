@@ -10,6 +10,7 @@
 			setUp();
 			stop();
 			arrangeScreen();
+			activeState = "LIFT";
 		}
 		
 		public override function setUp():void {

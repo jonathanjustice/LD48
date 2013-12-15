@@ -7,13 +7,21 @@
 		private var walkTarget:int=0;
 		private var minDistanceBetweenOldAndNewTargets:int=35;
 		private var maxDistanceBetweenOldAndNewTargets:int=400;
+		
+		private var minDistanceBetweenOldAndNewTargets_walk:int=35;
+		private var maxDistanceBetweenOldAndNewTargets_walk:int=400;
+		
+		private var minDistanceBetweenOldAndNewTargets_fire:int=15;
+		private var maxDistanceBetweenOldAndNewTargets_fire:int=50;
 		private var walking:Boolean=false;
+		private var running:Boolean=false;
 		private var pauseTime:int=0;
 		private var maxPauseTime:int=900;
 		private var minPauseTime:int=90;
 		private var lerpMin:Number=.001;
 		private var lerpMax:Number=.01;
 		private var multiplier:Number=0;
+		private var multiplier_fire:Number=.05;
 		private var multiplier_lift_X:Number=.1;
 		private var multiplier_lift_Y:Number=.1;
 		private var behaviorState:String="";
@@ -35,10 +43,12 @@
 		private var isSpeechAllowed:Boolean=true;
 		private var activeBubbles:int=0;
 		private var abortCurrentBubble:Boolean=false;
+		private var particleSystem:ParticleSystem;
 		public function Follower(){
 			setUp();
 			initialSetup();
 		}
+		
 		
 		public function getMood():String{
 			return mood;
@@ -82,7 +92,10 @@
 			groundPlane = newValue;
 		}
 		
+		
+		
 		private function initialSetup():void{
+			particleSystem = new ParticleSystem(this);
 			setBehaviorState("WALK");
 			this.x = Math.round(Math.random()* 780);
 			this.y = 450;
@@ -143,7 +156,17 @@
 					//trace("newState passed was none");
 					break;
 				case "FIRE":
-					//trace("newState passed was FIRE");
+					trace("newState passed was FIRE");
+					Main.getFollowerManager().abortCurrentBubble(this);
+					isSpeechAllowed=true;
+					triggerNewSpeechBubble();
+					minDistanceBetweenOldAndNewTargets = minDistanceBetweenOldAndNewTargets_fire;
+					maxDistanceBetweenOldAndNewTargets = maxDistanceBetweenOldAndNewTargets_fire;
+					particleSystem.playMode(behaviorState);
+					pauseTime=3;
+					running=true;
+					walking=false;
+					selectNewWalkTarget();
 					break;
 				case "METEOR":
 					//trace("newState passed was METEOR");
@@ -166,6 +189,8 @@
 					addReleaseHandler();
 					break;
 				case "WALK":
+					minDistanceBetweenOldAndNewTargets = minDistanceBetweenOldAndNewTargets_walk;
+					maxDistanceBetweenOldAndNewTargets = maxDistanceBetweenOldAndNewTargets_walk;
 					//trace("newState passed was WALK");
 					anim_walk();
 					break;
@@ -199,7 +224,7 @@
 					break;
 				case "FIRE":
 					//trace("newState passed was FIRE");
-					
+					setMultiplier(multiplier_fire,multiplier_fire);
 					break;
 				case "METEOR":
 					//trace("newState passed was METEOR");
@@ -294,6 +319,20 @@
 			//trace("vel",velocity);
 		}
 		
+		public function getVelocity():Point{
+			return velocity;
+		}
+		
+		public function getLocation():Point{
+			var loc:Point = new Point(this.x,this.y);
+			return loc;
+		}
+		
+		public function getScale():Number{
+			return this.scaleX;
+		}
+			
+		
 		private function setScreenBounds():void{
 				screenBounds = Main.theStage.stageWidth - (Main.theStage.stageWidth-Main.originalStageX)/2;
 		}
@@ -326,7 +365,20 @@
 		}
 		
 		private function onFire():void{
-			
+			//trace("onfire");
+			chanceToSpeak();
+			//anim_walk();
+			if(running){
+				var lerpAmount:Number =  (walkTarget-this.x)*multiplier_fire;
+				if(this.x == walkTarget){
+					//pauseWalking();
+					selectNewWalkTarget();
+				}
+				this.x += lerpAmount;
+				if(Math.abs(walkTarget-this.x) < 1){
+					selectNewWalkTarget();
+				}
+			}
 		}
 		
 		public function lift():void{

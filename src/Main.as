@@ -66,10 +66,10 @@
 			follower.setMouseCoordinates(theStage.mouseX,theStage.mouseY);
 		}
 		
-		/*
-		public function getStage():Object{
+		
+		public static function getStage():Object{
 			return theStage;
-		}*/
+		}
 	}
 }
 	
