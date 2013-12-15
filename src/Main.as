@@ -4,6 +4,7 @@
 	import flash.geom.*;
 	import flash.events.MouseEvent;
 	public class Main extends MovieClip{
+		public static var dialogs:Dialogs;
 		public static var followerManager:FollowerManager;
 		public static var actionManager;ActionManager;
 		public static var actionIndicator_mouse:ActionIndicator_mouse;
@@ -24,6 +25,7 @@
         }
 		
 		private function setUp():void{
+			dialogs = new Dialogs();
 			actionMenu = new ActionMenu();
 			actionIndicator_mouse = new ActionIndicator_mouse();
 			actionManager = new ActionManager();
@@ -42,6 +44,10 @@
 			actionMenu.lerpToPosition();
 			actionIndicator_mouse.setMouseCoordinates(stage.mouseX,stage.mouseY);
 			actionIndicator_mouse.lerpToPosition();
+		}
+		
+		public static function getDialogs():Dialogs{
+			return dialogs;
 		}
 		
 		public static function getActionManager():ActionManager{

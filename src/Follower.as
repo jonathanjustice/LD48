@@ -28,14 +28,49 @@
 		private var velocity:Point = new Point(0,0);
 		private var previousPosition:Point = new Point(0,0);
 		private var screenBounds:Number = 0;
+		private var happinessAmount:int=100;
+		private var happiness:String="worship";
+		private var mood:String="";
+		private var dialog:String="";
+		private var isSpeechAllowed:Boolean=true;
 		public function Follower(){
 			setUp();
 			initialSetup();
-			triggerNewSpeechBubble();
+		}
+		
+		public function getMood():String{
+			return mood;
+		}
+		
+		private function calculateMood():void{
+			if(happinessAmount < 10){
+				happiness = "_furious";
+			}else if (happinessAmount < 25){
+				happiness = "_angry";
+			}else if (happinessAmount < 50){
+				happiness = "_upset";
+			}else if (happinessAmount < 60){
+				happiness = "_indifferent";
+			}else if (happinessAmount < 75){
+				happiness = "_happy";
+			}else if (happinessAmount <= 100){
+				happiness = "_worship";
+			}
+			mood = behaviorState + happiness;
+			dialog = Main.getDialogs().selectDialog("walk_worship");
+			//trace("dialog:",dialog);
+		}
+		
+		public function allowSpeechBubble():void{
+			isSpeechAllowed = true;
 		}
 		
 		private function triggerNewSpeechBubble():void{
-			Main.getFollowerManager().createNewSpeechBubble(this);
+			if(isSpeechAllowed){
+				calculateMood();
+				Main.getFollowerManager().createNewSpeechBubble(this,dialog);
+				isSpeechAllowed=false;
+			}
 		}
 		
 		public function setGroundPlane(newValue:Number):void{
@@ -115,6 +150,7 @@
 					//trace("newState passed was LIFT");
 					anim_lifted();
 					addReleaseHandler();
+					triggerNewSpeechBubble();
 					break;
 				case "FALL":
 					//trace("newState passed was FALL");
@@ -227,6 +263,16 @@
 			}
 			calculateVelocity();
 			calculatePreviousPositions();
+			
+		}
+		
+		private function chanceToSpeak():void{
+			var chance = Math.round(Math.random()*100000);
+			//trace(chance);
+			if(chance > 99995){
+				
+				triggerNewSpeechBubble();
+			}
 		}
 		
 		private function calculatePreviousPositions():void{
@@ -288,6 +334,7 @@
 		}
 		
 		private function walk():void{
+			chanceToSpeak();
 			//anim_walk();
 			if(walking == false){
 				pauseTime--;

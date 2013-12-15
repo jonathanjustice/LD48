@@ -4,14 +4,22 @@
 	public class SpeechBubble extends MovieClip{
 		private var bubbleText:String = "";
 		private var typeCounter:int=0;
-		private var typeCounterMax:int=5;
+		private var typeCounterMax:int=4;
 		private var typeIncrement:int=0;
 		private var lettersArray:Array = new Array();
 		private var myFollower:MovieClip;
+		private var timeExisted:int=0;
+		private var lifeTime:int=400;
+		
+		private var markedForDeletion:Boolean=false;
 		public function SpeechBubble(follower:MovieClip,dialog:String="threeve"){
-			trace("speechbubble");
+			//trace("speechbubble");
 			myFollower = follower;
 			defineText(dialog);
+		}
+		
+		public function getFollower():MovieClip{
+			return myFollower;
 		}
 		
 		public function updateLoop():void{
@@ -20,7 +28,8 @@
 		}
 		
 		public function defineText(newString:String):void{
-			//trace(newString);
+			//trace("newString:",newString);
+			//trace("newString.length:",newString.length);
 			//bubbleText = newString;
 			for(var i:int=0;i< newString.length;i++){
 				lettersArray.push(newString.charAt(i));
@@ -31,20 +40,34 @@
 		private function typeText(event:Event):void{
 			if(this.currentLabel == "speechActive"){
 				if(typeCounter > typeCounterMax){
-			
-				if(typeIncrement < lettersArray.length){
-					//trace("typing");
-					bubbleText +=  lettersArray[typeIncrement];
-					//trace(bubbleText);
-					bubble_txt.text = bubbleText;
-					typeCounter=0;
-					typeIncrement++;
-				}else{
-					this.removeEventListener(Event.ENTER_FRAME, typeText);
+					if(typeIncrement < lettersArray.length){
+						//trace("typing");
+						bubbleText +=  lettersArray[typeIncrement];
+						//trace(bubbleText);
+						bubble_txt.text = bubbleText;
+						typeCounter=0;
+						typeIncrement++;
+					}else{
+						//this.removeEventListener(Event.ENTER_FRAME, typeText);
+					}
+				}
+				timeExisted++;
+				typeCounter++;
+				if(timeExisted>lifeTime){
+					//trace("beyond lifetime");
+					this.scaleX-=.05;
+					this.scaleY-=.05;
+					if(this.scaleX < .05){
+						//trace("too small");
+						this.removeEventListener(Event.ENTER_FRAME, typeText);	
+						markedForDeletion = true;
+					}
 				}
 			}
-			typeCounter++;
-			}
+		}
+		
+		public function getMarkedForDeletion():Boolean{
+			return markedForDeletion;
 		}
 	}
 }
