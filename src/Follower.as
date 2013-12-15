@@ -387,7 +387,7 @@
 			velocity.y = -.3*Math.abs(800/tossValue);
 			if(behaviorState != "SQUISHED" && behaviorState != "COIN" && behaviorState != "EXPLODED"){
 				var setOnFireChance:Number = Math.random()*10;
-				if(setOnFireChance>9){
+				if(setOnFireChance>9.5){
 					setBehaviorState("FIRE");
 				}
 				setBehaviorState("FALL");
