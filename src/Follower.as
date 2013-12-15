@@ -156,6 +156,7 @@
 					break;
 				case "NONE":
 					//trace("newState passed was none");
+					particleSystem.playMode(behaviorState);
 					break;
 				case "FIRE":
 					anim_fire();
@@ -171,6 +172,16 @@
 					running=true;
 					walking=false;
 					selectNewWalkTarget();
+					break;
+				case "COIN":
+				anim_coin();
+					running=false;
+					walking=false;
+					Main.getFollowerManager().abortCurrentBubble(this);
+					isSpeechAllowed=true;
+					triggerNewSpeechBubble();
+					
+					//trace("newState passed was METEOR");
 					break;
 				case "METEOR":
 					//trace("newState passed was METEOR");
@@ -210,6 +221,11 @@
 			this.gotoAndPlay("lifted");
 		}
 		
+		private function anim_coin():void{
+			//trace("play lifted");
+			this.gotoAndPlay("coin");
+		}
+		
 		private function anim_fire():void{
 			//trace("play lifted");
 			this.gotoAndPlay("fire");
@@ -234,6 +250,9 @@
 				case "FIRE":
 					//trace("newState passed was FIRE");
 					setMultiplier(multiplier_fire,multiplier_fire);
+					break;
+				case "COIN":
+					//trace("newState passed was FIRE");
 					break;
 				case "METEOR":
 					//trace("newState passed was METEOR");
@@ -302,6 +321,14 @@
 			if(behaviorState == "FALL"){
 				setScreenBounds();
 				fall();
+			}
+			if(behaviorState == "COIN"){
+				//setScreenBounds();
+				onCoin();
+			}
+			if(behaviorState == "METEOR"){
+				//setScreenBounds();
+				//fall();
 			}
 			calculateVelocity();
 			calculatePreviousPositions();
@@ -376,6 +403,17 @@
 		
 		private function increaseGravity():void{
 			currentGravity += gravityIncrement;
+		}
+		
+		private function onCoin():void{
+			if(this.currentLabel == "coinPop"){
+				//trace("coinEnd");
+				particleSystem.playMode(behaviorState);
+			}
+			if(this.currentLabel == "coinEnd"){
+				
+				setBehaviorState("NONE");
+			}
 		}
 		
 		private function onFire():void{

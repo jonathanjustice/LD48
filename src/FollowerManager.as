@@ -58,7 +58,10 @@
 			speechBubbles.push(speechBubble);
 			speechBubble.x = follower.x;
 			speechBubble.y = follower.y;
-			Main.theStage.addChild(speechBubble);
+			
+			var dislpayIndex:int = follower.parent.getChildIndex(follower);
+			Main.getStage().addChildAt(speechBubble,dislpayIndex);
+			//Main.theStage.addChild(speechBubble);
 			//trace("bubble");
 		}
 		

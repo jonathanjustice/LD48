@@ -39,6 +39,9 @@
 				case "hitbox_LIFT":
 					Main.getActionManager().setActiveAction("LIFT");
 					break;
+				case "hitbox_COIN":
+					Main.getActionManager().setActiveAction("COIN");
+					break;
 			}
 		}
 	}

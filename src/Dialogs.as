@@ -27,6 +27,15 @@
 		private var fire_furious:Array = new Array();
 		private var fire_dying:Array = new Array();
 		private var fire_crazy:Array = new Array();
+		
+		private var coin_worship:Array = new Array();
+		private var coin_happy:Array = new Array();
+		private var coin_indifferent:Array = new Array();
+		private var coin_upset:Array = new Array();
+		private var coin_angry:Array = new Array();
+		private var coin_furious:Array = new Array();
+		private var coin_dying:Array = new Array();
+		private var coin_crazy:Array = new Array();
 		public function Dialogs(){
 			defineDialogs();
 		}
@@ -61,6 +70,15 @@
 							"I am Leader's torch!",
 							"I am Leader's light!",
 							"I am bestowed with fire. Leader chooses me."
+							]
+			coin_worship = ["I fill the Leader's coffers!",
+							"Leader values me!",
+							"Leader says I'm worth it.",
+							"My happiness is Leader's true wealth.",
+							"Leader says money buys happiness.",
+							"Leader blesses me with golf!",
+							"Leader makes my heaven golden.",
+							"Leader paves the streets with gold!",
 							]
 		}
 		
@@ -140,6 +158,31 @@
 					break;
 				case "FIRE_crazy":
 					activeArray = fire_crazy;
+					break;
+					
+				case "COIN_worship":
+					activeArray = coin_worship;
+					break;
+				case "COIN_happy":
+					activeArray = coin_happy;
+					break;
+				case "COIN_indifferent":
+					activeArray = coin_indifferent;
+					break;
+				case "COIN_upset":
+					activeArray = coin_upset;
+					break;
+				case "COIN_angry":
+					activeArray = coin_angry;
+					break;
+				case "COIN_furious":
+					activeArray = coin_furious;
+					break;
+				case "COIN_dying":
+					activeArray = coin_dying;
+					break;
+				case "COIN_crazy":
+					activeArray = coin_crazy;
 					break;
 			}
 			

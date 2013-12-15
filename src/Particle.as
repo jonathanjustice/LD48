@@ -10,12 +10,14 @@
 		public var gravityIncrement:Number=.05;
 		private var markedForDeletion:Boolean=false;
 		private var scale:Number=0;
+		public var rotationValue:Number=0;
 		public function Particle(){
 			
 		}
 		
 		
 		public function defineSpawnPoint(spawnLocation:Point,spawnVelocity:Point,spawnScale:Number):void{
+			setRotationValue();
 			setGravity();
 			addSomeRandom();
 			scale = spawnScale;
@@ -23,6 +25,9 @@
 			this.scaleY = spawnScale;
 			this.x+=(4.5*spawnScale)+spawnLocation.x + addSomeRandom();
 			this.y+=(10*spawnScale)+spawnLocation.y + addSomeRandom();
+			if(this is P_B){
+				this.y-= 35*spawnScale;
+			}
 			velocity.x = spawnVelocity.x/25 + addSomeRandom();
 			velocity.y = spawnVelocity.y/25 + addSomeRandom();
 			
@@ -43,7 +48,12 @@
 			//child classes do this
 		}
 		
+		public function setRotationValue():void{
+			//child classes do this
+		}
+		
 		public function updateLoop():void{
+			this.rotation+=rotationValue;
 			gravity+=gravityIncrement;
 			velocity.y+=gravity;
 			//trace("particle" );

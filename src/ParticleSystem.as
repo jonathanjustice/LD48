@@ -49,6 +49,7 @@
 			}
 			if(spawnDelayCounter >= spawnDelay){
 				spawnDelayCounter=0;
+				var index:int = myFollower.parent.getChildIndex(myFollower);
 				switch(particleMode){
 					case "null":
 						//trace("newState passed was null");
@@ -59,9 +60,23 @@
 					case "FIRE":
 						var p_F:P_F = new P_F();
 						p_F.defineSpawnPoint(myFollower.getLocation(),myFollower.getVelocity(),myFollower.getScale());
-						var index:int = myFollower.parent.getChildIndex(myFollower);
 						Main.getStage().addChildAt(p_F,index);
 						fireParticles.push(p_F);
+						break;
+					case "COIN":
+						for (var b:int=0;b<3;b++){
+							var p_C:P_C = new P_C();
+							p_C.defineSpawnPoint(myFollower.getLocation(),myFollower.getVelocity(),myFollower.getScale());
+							Main.getStage().addChildAt(p_C,index);
+							fireParticles.push(p_C);
+						}
+						for (var a:int=0;a<25;a++){
+							var p_B:P_B = new P_B();
+							p_B.defineSpawnPoint(myFollower.getLocation(),myFollower.getVelocity(),myFollower.getScale());
+							Main.getStage().addChildAt(p_B,index);
+							fireParticles.push(p_B);
+						}
+						
 						break;
 					case "METEOR":
 						//trace("newState passed was METEOR");
