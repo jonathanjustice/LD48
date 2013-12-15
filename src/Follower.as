@@ -211,6 +211,7 @@
 					anim_falling();
 					break;
 				case "WALK":
+					running=false;
 					minDistanceBetweenOldAndNewTargets = minDistanceBetweenOldAndNewTargets_walk;
 					maxDistanceBetweenOldAndNewTargets = maxDistanceBetweenOldAndNewTargets_walk;
 					anim_walk();

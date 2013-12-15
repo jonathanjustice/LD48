@@ -85,7 +85,7 @@
 							"Leader says I'm worth it.",
 							"My happiness is Leader's true wealth.",
 							"Leader says money buys happiness.",
-							"Leader blesses me with golf!",
+							"Leader blesses me with gold!",
 							"Leader makes my heaven golden.",
 							"Leader paves the streets with gold!",
 							]

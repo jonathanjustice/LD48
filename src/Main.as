@@ -3,6 +3,8 @@
 	import flash.events.*;
 	import flash.geom.*;
 	import flash.events.MouseEvent;
+	import flash.display.*;
+			import flash.ui.Mouse;
 	public class Main extends MovieClip{
 		public static var dialogs:Dialogs;
 		public static var followerManager:FollowerManager;
@@ -12,6 +14,7 @@
 		private var actionMenu:ActionMenu;
 		private var stageNode:StageNode;
 		public static var originalStageX:int=800;
+		private var bg_art:BG_art = new BG_art;
 		public function Main() {
 			if (stage) init();
             else addEventListener(Event.ADDED_TO_STAGE, init);
@@ -21,10 +24,18 @@
         private function init(e:Event = null):void {
 			theStage = this.stage;
             removeEventListener(Event.ADDED_TO_STAGE, init);
+			//stage.scaleMode = StageScaleMode.NO_SCALE;
+			
+			//stage.scaleMode = StageScaleMode.NO_SCALE;
+			
+			stage.scaleMode = StageScaleMode.EXACT_FIT;
+			//stage.displayState = StageDisplayState.FULL_SCREEN;
 			setUp();
+			Mouse.hide();
         }
 		
 		private function setUp():void{
+			stage.addChild(bg_art);
 			dialogs = new Dialogs();
 			actionMenu = new ActionMenu();
 			actionIndicator_mouse = new ActionIndicator_mouse();
@@ -41,6 +52,7 @@
 			//trace("stage.width",stage.width);
 			//trace("stage.stageWidth",stage.stageWidth);
 			actionMenu.updateScreenLocation();
+			stage.setChildIndex(actionIndicator_mouse, parent.numChildren-1)
 			actionMenu.lerpToPosition();
 			actionIndicator_mouse.setMouseCoordinates(stage.mouseX,stage.mouseY);
 			actionIndicator_mouse.lerpToPosition();
