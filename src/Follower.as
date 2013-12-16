@@ -47,7 +47,7 @@
 		private var activeBubbles:int=0;
 		private var abortCurrentBubble:Boolean=false;
 		private var particleSystem:ParticleSystem;
-		private var maxYVelocity:int=-20;
+		private var maxYVelocity:int=-30;
 		public function Follower(){
 			setUp();
 			initialSetup();
@@ -164,7 +164,8 @@
 					break;
 				case "SQUISHED":
 					anim_squished();
-					particleSystem.playMode(behaviorState);
+					//particleSystem.playMode(behaviorState);
+					//particleSystem.playMode("NONE");
 					break;
 				case "FIRE":
 					anim_fire();
@@ -338,6 +339,10 @@
 				//setScreenBounds();
 				//fall();
 			}
+			if(behaviorState == "SQUISHED"){
+				//setScreenBounds();
+				onSquished();
+			}
 			calculateVelocity();
 			calculatePreviousPositions();
 			
@@ -386,7 +391,7 @@
 			this.y-=2;
 			velocity.x =-tossValue/50;
 			velocity.y = -.3*Math.abs(800/tossValue);
-			if(behaviorState != "SQUISHED" && behaviorState != "COIN" && behaviorState != "EXPLODED"){
+			if(behaviorState != "SQUISHED" && behaviorState != "COIN" && behaviorState != "EXPLODED" && behaviorState != "NONE"){
 				var setOnFireChance:Number = Math.random()*10;
 				if(setOnFireChance>9.5){
 					setBehaviorState("FIRE");
@@ -397,6 +402,9 @@
 		}
 		
 		private function fall():void{
+			this.x += velocity.x * friction;
+				this.y += velocity.y + currentGravity;
+				increaseGravity();
 			if(velocity.y < maxYVelocity){
 				velocity.y = maxYVelocity;
 			}
@@ -407,13 +415,15 @@
 				if(this.x < 0){
 					velocity.x*=-1;
 				}
-				this.x += velocity.x * friction;
-				this.y += velocity.y + currentGravity;
-				increaseGravity();
+				
 			}else{
+				trace(velocity.y);
 				this.y = groundPlane;
 				resetGravity();
-				if(running){
+				if(velocity.y >= 30){
+					setBehaviorState("SQUISHED");
+					
+				}else if(running){
 					setBehaviorState("FIRE");
 				}else if(walking){
 					setBehaviorState("WALK");
@@ -442,6 +452,19 @@
 			if(this.currentLabel == "coinEnd"){
 				
 				setBehaviorState("EXPLODED");
+			}
+		}
+		
+		private function onSquished():void{
+			particleSystem.playMode(behaviorState);
+			//trace("behaviorState",behaviorState);
+			//trace(this.currentLabel)
+			if(this.currentLabel != "squished_end"){
+				particleSystem.playMode("SQUISHED");
+			}
+			if(this.currentLabel == "squished_end"){
+				particleSystem.playMode(behaviorState);
+				setBehaviorState("NONE");
 			}
 		}
 		

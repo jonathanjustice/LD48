@@ -11,6 +11,8 @@
 			stop();
 			arrangeScreen();
 			setMultiplier(screenLerpX,screenLerpY);
+			
+			
 		}
 		
 		private function arrangeScreen():void{
@@ -22,6 +24,7 @@
 		public function updateScreenLocation():void{
 			desiredX = Main.theStage.stageWidth - (Main.theStage.stageWidth-Main.originalStageX)/2;
 			desiredY = 0;
+			
 		}
 		
 		public override function clickHandler(event:MouseEvent):void {

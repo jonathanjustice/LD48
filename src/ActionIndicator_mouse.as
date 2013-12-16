@@ -11,6 +11,7 @@
 			stop();
 			arrangeScreen();
 			activeState = "LIFT";
+			setActiveState(activeState);
 		}
 		
 		public override function setUp():void {
@@ -32,26 +33,7 @@
 			//trace(newState);
 			activeState = newState;
 			gotoAndStop(newState);
-			switch (newState){
-				case "null":
-					//trace("newState passed was null");
-					break;
-				case "NONE":
-					//trace("newState passed was none");
-					break;
-				case "FIRE":
-					//trace("newState passed was FIRE");
-					break;
-				case "METEOR":
-					//trace("newState passed was METEOR");
-					break;
-				case "LOVE":
-					//trace("newState passed was LOVE");
-					break;
-				case "LIFT":
-					//trace("newState passed was LIFT");
-					break;
-			}
+			
 		}
 		
 		private function arrangeScreen():void{

@@ -1,6 +1,7 @@
 ﻿package{
 	import flash.display.MovieClip;
 	import flash.events.*;
+	import flash.geom.Point;
 	public class ParticleSystem extends MovieClip{
 		private var particleMode:String = "";
 		private var fireParticles:Array = new Array();
@@ -58,7 +59,9 @@
 			if(spawnDelayCounter >= spawnDelay){
 				spawnDelayCounter=0;
 				var index:int = myFollower.parent.getChildIndex(myFollower);
+				
 				switch(particleMode){
+					
 					case "null":
 						//trace("newState passed was null");
 						break;
@@ -102,6 +105,19 @@
 							p_B.defineSpawnPoint(myFollower.getLocation(),myFollower.getVelocity(),myFollower.getScale());
 							Main.getStage().addChildAt(p_B,index);
 							fireParticles.push(p_B);
+						}
+						
+						break;
+						
+					case "SQUISHED":
+						for (var g:int=0;g<10;g++){
+							var p_B_s:P_B = new P_B();
+							var tempPoint:Point=new Point();
+							tempPoint.y = myFollower.getLocation().y+45*myFollower.getScale();
+							tempPoint.x = myFollower.getLocation().x;
+							p_B_s.defineSpawnPoint(tempPoint,myFollower.getVelocity(),myFollower.getScale());
+							Main.getStage().addChildAt(p_B_s,index);
+							fireParticles.push(p_B_s);
 						}
 						
 						break;

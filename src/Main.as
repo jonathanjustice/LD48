@@ -12,6 +12,7 @@
 		public static var actionIndicator_mouse:ActionIndicator_mouse;
 		public static var theStage:Object;
 		private var actionMenu:ActionMenu;
+		private var leader_Title:Leader_Title;
 		private var stageNode:StageNode;
 		public static var originalStageX:int=800;
 		private var bg_art:BG_art = new BG_art;
@@ -35,7 +36,9 @@
         }
 		
 		private function setUp():void{
+			leader_Title = new Leader_Title();
 			stage.addChild(bg_art);
+			stage.addChild(leader_Title);
 			dialogs = new Dialogs();
 			actionMenu = new ActionMenu();
 			actionIndicator_mouse = new ActionIndicator_mouse();
@@ -56,6 +59,7 @@
 			actionMenu.lerpToPosition();
 			actionIndicator_mouse.setMouseCoordinates(stage.mouseX,stage.mouseY);
 			actionIndicator_mouse.lerpToPosition();
+			leader_Title.lerpToPosition();
 		}
 		
 		public static function getDialogs():Dialogs{
