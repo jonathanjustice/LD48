@@ -48,6 +48,7 @@
 		private var abortCurrentBubble:Boolean=false;
 		private var particleSystem:ParticleSystem;
 		private var maxYVelocity:int=-30;
+		private var isDead:Boolean=false;
 		public function Follower(){
 			setUp();
 			initialSetup();
@@ -99,11 +100,14 @@
 		
 		
 		private function initialSetup():void{
+			this.eyes.burnMask.alpha=1;
 			particleSystem = new ParticleSystem(this);
 			setBehaviorState("WALK");
 			this.x = Math.round(Math.random()* 780);
 			this.y = 450;
-			
+			this.eyes.burnMask.alpha=0;
+			//this.burnMask.mouseEnabled=false;
+			//this.burnMask.mouseChildren=false;
 			selectNewLerpMultiplier(behaviorState);
 			pauseWalking();
 		}
@@ -150,6 +154,7 @@
 		}
 		
 		public function setBehaviorState(newState:String):void{
+			
 			//trace("newState passed was", newState);
 			behaviorState = newState;
 			switch (newState){
@@ -161,68 +166,86 @@
 				case "EXPLODED":
 					anim_exploded();
 					particleSystem.playMode(behaviorState);
+					isDead = true;
 					break;
 				case "SQUISHED":
+					isDead = true;
 					anim_squished();
 					//particleSystem.playMode(behaviorState);
 					//particleSystem.playMode("NONE");
 					break;
 				case "FIRE":
-					anim_fire();
-					fireTime=0;
-					Main.getFollowerManager().abortCurrentBubble(this);
-					isSpeechAllowed=true;
-					triggerNewSpeechBubble();
-					minDistanceBetweenOldAndNewTargets = minDistanceBetweenOldAndNewTargets_fire;
-					maxDistanceBetweenOldAndNewTargets = maxDistanceBetweenOldAndNewTargets_fire;
+					if(isDead == false){
+						this.eyes.burnMask.alpha=0;
+						anim_fire();
+						fireTime=0;
+						Main.getFollowerManager().abortCurrentBubble(this);
+						isSpeechAllowed=true;
+						triggerNewSpeechBubble();
+						minDistanceBetweenOldAndNewTargets = minDistanceBetweenOldAndNewTargets_fire;
+						maxDistanceBetweenOldAndNewTargets = maxDistanceBetweenOldAndNewTargets_fire;
+						particleSystem.playMode(behaviorState);
+						pauseTime=3;
+						running=true;
+						walking=false;
+						selectNewWalkTarget();
+					}
+					break;
+				case "CRISPY":
+					isDead = true;
+					anim_crispy();
 					particleSystem.playMode(behaviorState);
-					pauseTime=3;
-					running=true;
-					walking=false;
-					selectNewWalkTarget();
 					break;
 				case "COIN":
-					anim_coin();
-					running=false;
-					walking=false;
-					Main.getFollowerManager().abortCurrentBubble(this);
-					isSpeechAllowed=true;
-					triggerNewSpeechBubble();
+					if(isDead == false){
+						anim_coin();
+						running=false;
+						walking=false;
+						Main.getFollowerManager().abortCurrentBubble(this);
+						isSpeechAllowed=true;
+						triggerNewSpeechBubble();
+					}
 					
 					break;
 				case "METEOR":
-					anim_meteorLook();
-					isSpeechAllowed=true;
-					triggerNewSpeechBubble();
-					//trace("newState passed was METEOR");
-					Main.getFollowerManager().createNewMeteor(this);
-
+					if(isDead == false){
+						anim_meteorLook();
+						isSpeechAllowed=true;
+						triggerNewSpeechBubble();
+						//trace("newState passed was METEOR");
+						Main.getFollowerManager().createNewMeteor(this);
+					}
 					break;
 				case "LOVE":
 					break;
 				case "LIFT":
-					anim_lifted();
-					addReleaseHandler();
-					
-					Main.getFollowerManager().abortCurrentBubble(this);
-					isSpeechAllowed=true;
-					triggerNewSpeechBubble();
+					trace(isDead);
+					if(isDead == false){
+						anim_lifted();
+						addReleaseHandler();
+						Main.getFollowerManager().abortCurrentBubble(this);
+						isSpeechAllowed=true;
+						triggerNewSpeechBubble();
+					}
 					break;
 				case "FALL":
 					anim_falling();
 					break;
 				case "WALK":
-					running=false;
-					minDistanceBetweenOldAndNewTargets = minDistanceBetweenOldAndNewTargets_walk;
-					maxDistanceBetweenOldAndNewTargets = maxDistanceBetweenOldAndNewTargets_walk;
-					anim_walk();
-					break;
+					if(isDead == false){
+						running=false;
+						minDistanceBetweenOldAndNewTargets = minDistanceBetweenOldAndNewTargets_walk;
+						maxDistanceBetweenOldAndNewTargets = maxDistanceBetweenOldAndNewTargets_walk;
+						anim_walk();
+						break;
+					}
 			}
 		}
 		
 		private function anim_meteorLook():void{
 			this.gotoAndPlay("meteor");
 			this.eyes.gotoAndPlay("meteor");
+			//isDead = true;
 		}
 		
 		private function anim_eyes(animLabel:String):void{
@@ -235,10 +258,13 @@
 		
 		private function anim_squished():void{
 			this.gotoAndPlay("squished");
+			isDead = true;
 		}
 		
 		private function anim_exploded():void{
 			this.gotoAndPlay("exploded");
+			isDead = true;
+			
 		}
 		
 		private function anim_coin():void{
@@ -247,6 +273,13 @@
 		
 		private function anim_fire():void{
 			this.gotoAndPlay("fire");
+			//isDead = true;
+		}
+		
+		private function anim_crispy():void{
+			trace("crispy");
+			this.gotoAndPlay("crispy");
+			isDead = true;
 		}
 		
 		private function anim_walk():void{
@@ -254,6 +287,7 @@
 		}
 		
 		private function anim_falling():void{
+			
 		}
 		
 		private function selectNewLerpMultiplier(currentBehaviorState:String):void{
@@ -322,7 +356,10 @@
 				onFire();
 			}
 			if(behaviorState == "LIFT"){
-				lift();
+				if(isDead == false){
+					lift();
+				}
+				
 			}
 			if(behaviorState == "LOVE"){
 				love();
@@ -391,7 +428,7 @@
 			this.y-=2;
 			velocity.x =-tossValue/50;
 			velocity.y = -.3*Math.abs(800/tossValue);
-			if(behaviorState != "SQUISHED" && behaviorState != "COIN" && behaviorState != "EXPLODED" && behaviorState != "NONE"){
+			if(behaviorState != "SQUISHED" && behaviorState != "COIN" && behaviorState != "EXPLODED" && behaviorState != "NONE" && behaviorState != "CRISPY"){
 				var setOnFireChance:Number = Math.random()*10;
 				if(setOnFireChance>9.5){
 					setBehaviorState("FIRE");
@@ -422,6 +459,7 @@
 				resetGravity();
 				if(velocity.y >= 30){
 					setBehaviorState("SQUISHED");
+					isDead = true;
 					
 				}else if(running){
 					setBehaviorState("FIRE");
@@ -469,6 +507,12 @@
 		}
 		
 		private function onFire():void{
+			try {
+				this.eyes.burnMask.alpha+=.005;
+			}
+			catch(error:Error){
+			}
+			
 			chanceToSpeak();
 			if(running){
 				var lerpAmount:Number =  (walkTarget-this.x)*multiplier_fire;
@@ -481,8 +525,11 @@
 				}
 			}
 			if(fireTime > maxFireTime){
-				setBehaviorState("WALK");
+				setBehaviorState("CRISPY");
+				//setBehaviorState("WALK");
+				//isDead = true;
 				this.particleSystem.playMode("NONE");
+				setBehaviorState("NONE");
 			}
 			fireTime++;
 		}
