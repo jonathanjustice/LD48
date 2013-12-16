@@ -12,7 +12,7 @@
 		}
 		
 		public function setActiveAction(newAction:String):void{
-			trace(newAction);
+			//trace(newAction);
 			Main.getActionIndicator_mouse().setActiveState(newAction);
 		}
 		

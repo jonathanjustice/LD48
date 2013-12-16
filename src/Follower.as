@@ -219,7 +219,7 @@
 				case "LOVE":
 					break;
 				case "LIFT":
-					trace(isDead);
+					//trace(isDead);
 					if(isDead == false){
 						anim_lifted();
 						addReleaseHandler();
@@ -249,7 +249,15 @@
 		}
 		
 		private function anim_eyes(animLabel:String):void{
-			this.eyes.gotoAndStop(animLabel);
+			
+			try {
+				this.eyes.gotoAndStop(animLabel);
+			}
+			catch(error:Error){
+				//don't report error 
+			}
+						
+			
 		}
 		
 		private function anim_lifted():void{
@@ -277,7 +285,7 @@
 		}
 		
 		private function anim_crispy():void{
-			trace("crispy");
+			//trace("crispy");
 			this.gotoAndPlay("crispy");
 			isDead = true;
 		}
@@ -454,7 +462,7 @@
 				}
 				
 			}else{
-				trace(velocity.y);
+				//trace(velocity.y);
 				this.y = groundPlane;
 				resetGravity();
 				if(velocity.y >= 30){
