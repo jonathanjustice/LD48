@@ -150,6 +150,7 @@
 		}
 		
 		public function removeOutHandler():void{
+			trace("removeOutHandler");
 			this.removeEventListener(MouseEvent.MOUSE_OUT, outHandler);
 		}
 		

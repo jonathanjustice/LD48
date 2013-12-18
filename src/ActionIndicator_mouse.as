@@ -33,7 +33,8 @@
 			//trace(newState);
 			activeState = newState;
 			gotoAndStop(newState);
-			
+			this.mouseEnabled=false;
+			this.mouseChildren=false;
 		}
 		
 		private function arrangeScreen():void{

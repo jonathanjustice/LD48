@@ -16,6 +16,8 @@
 			//trace("speechbubble");
 			myFollower = follower;
 			defineText(dialog);
+			this.mouseEnabled=false;
+			this.mouseChildren=false;
 		}
 		
 		public function getFollower():MovieClip{

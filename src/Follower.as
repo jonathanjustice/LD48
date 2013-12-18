@@ -54,6 +54,13 @@
 			initialSetup();
 		}
 		
+		public function abortInput():void{
+			removeOutHandler();
+			removeOverHandler();
+			removeClickHandler();
+			removeDownHandler();
+			trace("input aborted");
+		}
 		
 		public function getMood():String{
 			return mood;
@@ -106,8 +113,8 @@
 			this.x = Math.round(Math.random()* 780);
 			this.y = 450;
 			this.eyes.burnMask.alpha=0;
-			//this.burnMask.mouseEnabled=false;
-			//this.burnMask.mouseChildren=false;
+			this.eyes.burnMask.mouseEnabled=false;
+			this.eyes.burnMask.mouseChildren=false;
 			selectNewLerpMultiplier(behaviorState);
 			pauseWalking();
 		}
@@ -166,16 +173,20 @@
 				case "EXPLODED":
 					anim_exploded();
 					particleSystem.playMode(behaviorState);
-					isDead = true;
+					setToDead();
 					break;
 				case "SQUISHED":
-					isDead = true;
+					setToDead();
 					anim_squished();
 					//particleSystem.playMode(behaviorState);
 					//particleSystem.playMode("NONE");
 					break;
 				case "FIRE":
-					if(isDead == false){
+					if (isDead == false) {
+						var chanceToFlipLeftOrRight:Number = Math.random() * 10;
+						if (chanceToFlipLeftOrRight < 5) {
+							this.scaleX *= -1;
+						}
 						this.eyes.burnMask.alpha=0;
 						anim_fire();
 						fireTime=0;
@@ -192,12 +203,13 @@
 					}
 					break;
 				case "CRISPY":
-					isDead = true;
+					setToDead();
 					anim_crispy();
 					particleSystem.playMode(behaviorState);
 					break;
 				case "COIN":
 					if(isDead == false){
+						setToDead();
 						anim_coin();
 						running=false;
 						walking=false;
@@ -209,9 +221,11 @@
 					break;
 				case "METEOR":
 					if(isDead == false){
+						setToDead();
 						anim_meteorLook();
 						isSpeechAllowed=true;
 						triggerNewSpeechBubble();
+						
 						//trace("newState passed was METEOR");
 						Main.getFollowerManager().createNewMeteor(this);
 					}
@@ -242,10 +256,19 @@
 			}
 		}
 		
+		private function setToDead():void{
+			isDead = true;
+			abortInput();
+			this.eyes.burnMask.mouseEnabled=false;
+			this.eyes.burnMask.mouseChildren=false;
+			this.mouseEnabled=false;
+			this.mouseChildren=false;
+		}
+		
 		private function anim_meteorLook():void{
 			this.gotoAndPlay("meteor");
 			this.eyes.gotoAndPlay("meteor");
-			//isDead = true;
+			setToDead();
 		}
 		
 		private function anim_eyes(animLabel:String):void{
@@ -266,13 +289,10 @@
 		
 		private function anim_squished():void{
 			this.gotoAndPlay("squished");
-			isDead = true;
 		}
 		
 		private function anim_exploded():void{
 			this.gotoAndPlay("exploded");
-			isDead = true;
-			
 		}
 		
 		private function anim_coin():void{
@@ -281,13 +301,11 @@
 		
 		private function anim_fire():void{
 			this.gotoAndPlay("fire");
-			//isDead = true;
 		}
 		
 		private function anim_crispy():void{
 			//trace("crispy");
 			this.gotoAndPlay("crispy");
-			isDead = true;
 		}
 		
 		private function anim_walk():void{
@@ -432,6 +450,7 @@
 			
 		}
 		
+		//if the guy isn't dead, then allow him to be thrown
 		public function startToss(tossValue:Number):void{
 			this.y-=2;
 			velocity.x =-tossValue/50;
@@ -467,7 +486,7 @@
 				resetGravity();
 				if(velocity.y >= 30){
 					setBehaviorState("SQUISHED");
-					isDead = true;
+					setToDead();
 					
 				}else if(running){
 					setBehaviorState("FIRE");
@@ -516,7 +535,9 @@
 		
 		private function onFire():void{
 			try {
-				this.eyes.burnMask.alpha+=.005;
+				if(this.eyes.burnMask.alpha < 1){
+					this.eyes.burnMask.alpha+=.005;
+				}
 			}
 			catch(error:Error){
 			}
@@ -534,8 +555,6 @@
 			}
 			if(fireTime > maxFireTime){
 				setBehaviorState("CRISPY");
-				//setBehaviorState("WALK");
-				//isDead = true;
 				this.particleSystem.playMode("NONE");
 				setBehaviorState("NONE");
 			}

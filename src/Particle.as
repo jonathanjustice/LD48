@@ -14,7 +14,8 @@
 		public var isActive:Boolean=true;
 		public var initialSpawnVel:Point=new Point();
 		public function Particle(){
-			
+			this.mouseEnabled=false;
+			this.mouseChildren=false;
 		}
 		
 		public function setLifeTime():void{
@@ -31,7 +32,7 @@
 			setRotationValue();
 			setGravity();
 			addSomeRandom();
-			scale = spawnScale;
+			scale = Math.abs(spawnScale);
 			this.scaleX = spawnScale;
 			this.scaleY = spawnScale;
 			this.x+=(4.5*spawnScale)+spawnLocation.x + addSomeRandom();

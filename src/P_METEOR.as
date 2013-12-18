@@ -15,12 +15,21 @@
 			meteor_dirt.visible=false;
 			meteor_top.visible=true;
 			meteor_bottom.visible=true;
+			disabledMouseInteraction();
+		}
+		
+		private function disabledMouseInteraction():void{
+			this.mouseEnabled=false;
+			this.mouseChildren=false;
+			meteor_dirt.mouseEnabled=false;
+			meteor_top.mouseEnabled=false;
+			meteor_bottom.mouseEnabled=false;
+			meteor_dirt.mouseChildren=false;
+			meteor_top.mouseChildren=false;
+			meteor_bottom.mouseChildren=false;
 		}
 		
 		public override function doSpecial():void{
-			//this.scaleX*=scaleMultiplier;
-			//this.scaleY*=scaleMultiplier;
-			//scaleMultiplier-=.003;
 			collisionTime++;
 			lerp();
 			
@@ -28,7 +37,6 @@
 		}
 		
 		public function getDesiredY():Number{
-			
 			return desiredY;
 		}
 		
@@ -67,9 +75,9 @@
 			setRotationValue();
 			
 			addSomeRandom();
-			scale = spawnScale;
-			this.scaleX = spawnScale;
-			this.scaleY = spawnScale;
+			scale = Math.abs(spawnScale);
+			this.scaleX = scale;
+			this.scaleY = scale;
 			this.x+=(4.5*spawnScale)+spawnLocation.x + addSomeRandom()*125;
 			this.y+= ((10*spawnScale)+spawnLocation.y )-700 + addSomeRandom();
 			setGravity();
@@ -95,6 +103,7 @@
 				timeExisted=950;
 				myFollower.setBehaviorState("SQUISHED");
 				Main.getFollowerManager().tossAllFollowers(this);
+				disabledMouseInteraction();
 			}
 		}
 		
