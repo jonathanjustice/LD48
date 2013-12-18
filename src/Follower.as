@@ -59,7 +59,6 @@
 			removeOverHandler();
 			removeClickHandler();
 			removeDownHandler();
-			trace("input aborted");
 		}
 		
 		public function getMood():String{
@@ -89,8 +88,6 @@
 			isSpeechAllowed = true;
 		}
 		
-		
-		
 		private function triggerNewSpeechBubble():void{
 			if(isSpeechAllowed){
 				activeBubbles += 1;
@@ -103,8 +100,6 @@
 		public function setGroundPlane(newValue:Number):void{
 			groundPlane = newValue;
 		}
-		
-		
 		
 		private function initialSetup():void{
 			this.eyes.burnMask.alpha=1;

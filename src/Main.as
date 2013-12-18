@@ -32,10 +32,11 @@
 			stage.scaleMode = StageScaleMode.EXACT_FIT;
 			//stage.displayState = StageDisplayState.FULL_SCREEN;
 			setUp();
-			Mouse.hide();
         }
 		
 		private function setUp():void{
+			Mouse.hide();
+			addKeyboardInput();
 			leader_Title = new Leader_Title();
 			stage.addChild(bg_art);
 			stage.addChild(leader_Title);
@@ -44,11 +45,44 @@
 			actionIndicator_mouse = new ActionIndicator_mouse();
 			actionManager = new ActionManager();
 			followerManager = new FollowerManager();
-			stageNode = new StageNode();
-			stageNode.visible=false;
-			stage.addChild(stageNode);
 			followerManager.setUp();
 			this.addEventListener(Event.ENTER_FRAME, updateScreenLocations);
+		}
+		
+		private function addKeyboardInput():void{
+			stage.addEventListener(KeyboardEvent.KEY_DOWN, restartGame);
+		}
+		
+		private function removeKeyboardInput():void{
+			stage.removeEventListener(KeyboardEvent.KEY_DOWN, restartGame);
+		}
+		
+		private function restartGame(event:KeyboardEvent):void{
+			trace(event.keyCode);
+			if(event.keyCode == 32 || event.keyCode == 82){
+				trace("game should restart here");
+				
+				//cleareverything
+				Mouse.hide();
+				removeKeyboardInput();
+				stage.removeChild(leader_Title);
+				leader_Title = null;
+				
+				stage.removeChild(bg_art);
+				bg_art = null;
+				dialogs = null;
+				dialogs = new Dialogs();
+				actionMenu.removeThisScreen();
+				actionMenu = null;
+				
+				actionIndicator_mouse.removeThisScreen();
+				actionIndicator_mouse = null;
+				actionManager.destroy();
+				actionManager = null;
+				followerManager.destroy();
+				followerManager = null;
+				this.removeEventListener(Event.ENTER_FRAME, updateScreenLocations);
+			}
 		}
 		
 		private function updateScreenLocations(e:Event):void{

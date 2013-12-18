@@ -78,8 +78,8 @@
 			scale = Math.abs(spawnScale);
 			this.scaleX = scale;
 			this.scaleY = scale;
-			this.x+=(4.5*spawnScale)+spawnLocation.x + addSomeRandom()*125;
-			this.y+= ((10*spawnScale)+spawnLocation.y )-700 + addSomeRandom();
+			this.x+=(4.5*scale)+spawnLocation.x + addSomeRandom()*125;
+			this.y+= ((10*scale)+spawnLocation.y )-700 + addSomeRandom();
 			setGravity();
 			//this.y=5;
 			//velocity.x = spawnVelocity.x/25 + addSomeRandom();

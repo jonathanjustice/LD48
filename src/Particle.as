@@ -33,12 +33,12 @@
 			setGravity();
 			addSomeRandom();
 			scale = Math.abs(spawnScale);
-			this.scaleX = spawnScale;
-			this.scaleY = spawnScale;
-			this.x+=(4.5*spawnScale)+spawnLocation.x + addSomeRandom();
-			this.y+=(10*spawnScale)+spawnLocation.y + addSomeRandom();
+			this.scaleX = scale;
+			this.scaleY = scale;
+			this.x+=(4.5*scale)+spawnLocation.x + addSomeRandom();
+			this.y+=(10*scale)+spawnLocation.y + addSomeRandom();
 			if(this is P_B){
-				this.y-= 35*spawnScale;
+				this.y-= 35*scale;
 			}
 			velocity.x = spawnVelocity.x/25 + addSomeRandom();
 			velocity.y = spawnVelocity.y/25 + addSomeRandom();

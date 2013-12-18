@@ -150,7 +150,6 @@
 		}
 		
 		public function removeOutHandler():void{
-			trace("removeOutHandler");
 			this.removeEventListener(MouseEvent.MOUSE_OUT, outHandler);
 		}
 		
@@ -201,7 +200,7 @@
 			removeOverHandler();
 			removeClickHandler();
 			removeDynamicBlocker();
-			Main.theStage.addChild(this);
+			Main.theStage.removeChild(this);
 		}
 	}
 }

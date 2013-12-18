@@ -19,6 +19,10 @@
 			enableUpdateLoop();
 		}
 		
+		public function destroy():void{
+			disableUpdateLoop();
+		}
+		
 		private function disableUpdateLoop():void{
 			removeEventListener(Event.ENTER_FRAME, updateLoop);
 		}

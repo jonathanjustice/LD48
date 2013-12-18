@@ -11,6 +11,10 @@
 			enableUpdateLoop();
 		}
 		
+		public function destroy():void{
+			disableUpdateLoop();
+		}
+		
 		public function setActiveAction(newAction:String):void{
 			//trace(newAction);
 			Main.getActionIndicator_mouse().setActiveState(newAction);
