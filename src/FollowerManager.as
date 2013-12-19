@@ -48,9 +48,19 @@
 			}
 		}
 		
+		public function checkForClickRadius():Array{
+			var arrayOfActivatedFollowers:Array = new Array();
+			for(var a:int=0;a<followers.length;a++){
+				if(followers[a].hitTestObject(Main.getActionIndicator_mouse().hitbox)){
+					arrayOfActivatedFollowers.push(followers[a]);
+				}
+			}
+			//trace(arrayOfActivatedFollowers);
+			return arrayOfActivatedFollowers;
+		}
+		
 		
 		private function updateLoop(e:Event):void{
-			
 			for(var a:int=0;a<followers.length;a++){
 				//trace(a);
 				followers[a].updateLoop();
@@ -117,7 +127,7 @@
 			var leaderStatue = new LeaderStatue();
 			leaderStatues.push(leaderStatue);
 			leaderStatue.x = 350;
-			leaderStatue.y = 468;
+			leaderStatue.y = 460;
 			Main.theStage.addChild(leaderStatue);
 		}
 		

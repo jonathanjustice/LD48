@@ -27,6 +27,7 @@
 			
 		}
 		
+		//should do feedback on each click
 		public override function clickHandler(event:MouseEvent):void {
 			//trace(event.target.name);
 			switch (event.target.name) {

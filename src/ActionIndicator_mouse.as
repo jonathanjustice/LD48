@@ -12,6 +12,7 @@
 			arrangeScreen();
 			activeState = "LIFT";
 			setActiveState(activeState);
+			hitbox.visible = false;
 		}
 		
 		public override function setUp():void {

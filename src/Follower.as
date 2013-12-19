@@ -19,8 +19,8 @@
 		private var running:Boolean=false;
 		private var beingTossed:Boolean=false;
 		private var pauseTime:int=0;
-		private var maxPauseTime:int=900;
-		private var minPauseTime:int=90;
+		private var maxPauseTime:int=9;
+		private var minPauseTime:int=9;
 		private var lerpMin:Number=.001;
 		private var lerpMax:Number=.01;
 		private var multiplier:Number=0;
@@ -157,7 +157,6 @@
 		
 		public function setBehaviorState(newState:String):void{
 			
-			//trace("newState passed was", newState);
 			behaviorState = newState;
 			switch (newState){
 				case "null":
@@ -204,6 +203,8 @@
 					break;
 				case "COIN":
 					if(isDead == false){
+						
+						do_stuff_to_active_followers_inside_the_click_radius_excluding_this("HOP");
 						setToDead();
 						anim_coin();
 						running=false;
@@ -220,15 +221,20 @@
 						anim_meteorLook();
 						isSpeechAllowed=true;
 						triggerNewSpeechBubble();
-						
-						//trace("newState passed was METEOR");
+						do_stuff_to_active_followers_inside_the_click_radius_excluding_this("LOOK_UPWARDS");
 						Main.getFollowerManager().createNewMeteor(this);
+						
 					}
+					break;
+				case "LOOK_UPWARDS":
+					this.eyes.gotoAndPlay("meteor");
+					break;
+				case "HOP":
+					anim_hop();
 					break;
 				case "LOVE":
 					break;
 				case "LIFT":
-					//trace(isDead);
 					if(isDead == false){
 						anim_lifted();
 						addReleaseHandler();
@@ -251,6 +257,21 @@
 			}
 		}
 		
+		private function do_stuff_to_active_followers_inside_the_click_radius_excluding_this(newState:String):void{
+			var followers:Array = Main.getFollowerManager().checkForClickRadius();
+			for each( var follower:Follower in followers){
+				if(follower != this){
+					if(follower.behaviorState != "SQUISHED" && 
+						follower.behaviorState != "COIN" && 
+						follower.behaviorState != "EXPLODED" && 
+						follower.behaviorState != "NONE" && 
+						follower.behaviorState != "CRISPY"){
+						follower.setBehaviorState(newState);
+					}
+				}
+			}
+		}
+		
 		private function setToDead():void{
 			isDead = true;
 			abortInput();
@@ -264,6 +285,16 @@
 			this.gotoAndPlay("meteor");
 			this.eyes.gotoAndPlay("meteor");
 			setToDead();
+		}
+		
+		private function anim_hop():void{
+			this.gotoAndStop("hop");
+			this.eyes.gotoAndPlay("coinLook");
+			var animOffset:int = Math.random()*8;
+			animOffset+=this.currentFrame;
+			this.gotoAndPlay(animOffset);
+			
+			//setToDead();
 		}
 		
 		private function anim_eyes(animLabel:String):void{
@@ -299,7 +330,6 @@
 		}
 		
 		private function anim_crispy():void{
-			//trace("crispy");
 			this.gotoAndPlay("crispy");
 		}
 		
@@ -365,11 +395,10 @@
 		private function pauseWalking():void{
 			selectNewPauseTime();
 			walking = false;
-			anim_eyes("center")
+			anim_eyes("center");
 		}
 		
 		public function updateLoop():void{
-			
 			if(behaviorState == "WALK"){
 				walk();
 			}
@@ -401,9 +430,31 @@
 				//setScreenBounds();
 				onSquished();
 			}
+			if(behaviorState == "HOP"){
+				//setScreenBounds();
+				onHop();
+			}
 			calculateVelocity();
 			calculatePreviousPositions();
+			calculateShadows();
 			
+		}
+		
+		private function calculateShadows():void{
+			if(isDead == false){
+				this.shadow.alpha = ((this.y/2)/groundPlane*2)
+				this.shadow.y = ((19.85*getScale())+groundPlane-this.y)/getScale();
+				this.shadow.x = ((groundPlane-this.y)/getScale())/5;
+				if(this.y > groundPlane){
+					this.shadow.alpha = 1;
+					this.shadow.y = 19.85;
+					this.shadow.x = 0;
+				}
+			}else{
+				this.shadow.alpha = 0;
+				this.shadow.y = 19.85;
+				this.shadow.x = 0;
+			}
 		}
 		
 		private function chanceToSpeak():void{
@@ -460,6 +511,14 @@
 			
 		}
 		
+		private function onHop():void{
+			/*if(this.currentLabel == "hop_eyes_start"){
+				this.eyes.gotoAndPlay("coinLook");
+			}*/
+			if(this.eyes.currentLabel == "coinLook_end"){
+				setBehaviorState("WALK");
+			}
+		}
 		private function fall():void{
 			this.x += velocity.x * friction;
 				this.y += velocity.y + currentGravity;
@@ -468,6 +527,7 @@
 				velocity.y = maxYVelocity;
 			}
 			if(this.y < groundPlane){
+				
 				if(this.x > screenBounds){
 					velocity.x*=-1;
 				}
@@ -517,8 +577,6 @@
 		
 		private function onSquished():void{
 			particleSystem.playMode(behaviorState);
-			//trace("behaviorState",behaviorState);
-			//trace(this.currentLabel)
 			if(this.currentLabel != "squished_end"){
 				particleSystem.playMode("SQUISHED");
 			}
@@ -569,7 +627,7 @@
 		
 		private function walk():void{
 			chanceToSpeak();
-			//anim_walk();
+			anim_walk();
 			if(walking == false){
 				pauseTime--;
 				if(pauseTime > 0){
@@ -580,11 +638,9 @@
 			
 			if(walking){
 				var lerpAmount:Number =  (walkTarget-this.x)*multiplier;
-				if(this.x == walkTarget){
-					pauseWalking();
-				}
+				
 				this.x += lerpAmount;
-				if(Math.abs(walkTarget-this.x) < 1){
+				if(Math.abs(walkTarget-this.x) < 50){
 					pauseWalking();
 				}
 			}
