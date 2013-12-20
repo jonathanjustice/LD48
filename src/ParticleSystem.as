@@ -74,6 +74,23 @@
 						Main.getStage().addChildAt(p_F,index);
 						fireParticles.push(p_F);
 						break;
+					case "C_FIRE_COIN":
+						var tempPoint2:Point=new Point();
+							tempPoint2.y = (myFollower.getVelocity().y+myFollower.getScale());
+							tempPoint2.x = 30*myFollower.getVelocity().x;
+						for (var h:int=0;h<10;h++){
+							var p_F_more:P_F = new P_F();
+							p_F_more.defineSpawnPoint(myFollower.getLocation(),tempPoint2,myFollower.getScale());
+							Main.getStage().addChildAt(p_F_more,index);
+							fireParticles.push(p_F_more);
+						}
+						for (var j:int=0;j<15;j++){
+							var p_B_more:P_B = new P_B();
+							p_B_more.defineSpawnPoint(myFollower.getLocation(),myFollower.getVelocity(),myFollower.getScale());
+							Main.getStage().addChildAt(p_B_more,index);
+							fireParticles.push(p_B_more);
+						}
+						break;
 					case "METEOR_FALL":
 						for (var d:int=0;d<15;d++){
 							var p_F_MF_f:P_F_MF = new P_F_MF();

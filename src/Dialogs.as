@@ -45,6 +45,9 @@
 		private var meteor_furious:Array = new Array();
 		private var meteor_dying:Array = new Array();
 		private var meteor_crazy:Array = new Array();
+		
+		
+		private var C_FIRE_COIN_worship:Array = new Array();
 		public function Dialogs(){
 			defineDialogs();
 		}
@@ -98,12 +101,27 @@
 							"Leader is coming for me!",
 							"A gift of love from Leader",
 							]
+			C_FIRE_COIN_worship = ["asdasdasdasd",
+							"asdasdasdasd!",
+							"asdasdasd.",
+							"Aasdasdasdasde.",
+							"Leasdasdasdasdoaches!",
+							"Iasdasdasdader!",
+							"Leadasdasdasdme!",
+							"Aasdasdasdader",
+							]
 			
 		}
 		
 		public function selectDialog(arrayName:String):String{
 			var activeArray:Array = new Array();
 			switch(arrayName){
+				case "C_FIRE_COIN_worship":
+					activeArray = C_FIRE_COIN_worship;
+					break;
+				
+				
+				
 				case "WALK_worship":
 					activeArray = walk_worship;
 					break;

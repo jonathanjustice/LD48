@@ -49,6 +49,12 @@
 		private var particleSystem:ParticleSystem;
 		private var maxYVelocity:int=-30;
 		private var isDead:Boolean=false;
+		private var isCrispy:Boolean=false;
+		private var isOnFire:Boolean=false;
+		private var is_C_FIRE_COIN:Boolean = false;
+		private var targetRotation:Number=0;
+		private var rocketVelocity:Point=new Point(0,-.5);
+		private var rocketSpeed:int=5;
 		public function Follower(){
 			setUp();
 			initialSetup();
@@ -90,10 +96,12 @@
 		
 		private function triggerNewSpeechBubble():void{
 			if(isSpeechAllowed){
-				activeBubbles += 1;
-				calculateMood();
-				Main.getFollowerManager().createNewSpeechBubble(this,dialog);
-				isSpeechAllowed=false;
+				if(Math.random()*10<5){
+					activeBubbles += 1;
+					calculateMood();
+					Main.getFollowerManager().createNewSpeechBubble(this,dialog);
+					isSpeechAllowed=false;
+				}
 			}
 		}
 		
@@ -193,27 +201,50 @@
 						pauseTime=3;
 						running=true;
 						walking=false;
+						isOnFire=true;
 						selectNewWalkTarget();
 					}
 					break;
 				case "CRISPY":
 					setToDead();
+					running=false;
+					walking=false;
+					isOnFire=false;
+					isCrispy=true;
 					anim_crispy();
 					particleSystem.playMode(behaviorState);
 					break;
 				case "COIN":
-					if(isDead == false){
-						
+					if(isDead==true){
+						//trace("dead DON'T DO ANYTHING");
+					}else if(isDead == false){
 						do_stuff_to_active_followers_inside_the_click_radius_excluding_this("HOP");
 						setToDead();
-						anim_coin();
 						running=false;
 						walking=false;
-						Main.getFollowerManager().abortCurrentBubble(this);
-						isSpeechAllowed=true;
-						triggerNewSpeechBubble();
+						if(isOnFire && is_C_FIRE_COIN==false){
+							setToDead();
+							setBehaviorState("C_FIRE_COIN");
+						}else if(is_C_FIRE_COIN == true){
+						}else {
+							Main.getFollowerManager().abortCurrentBubble(this);
+							isSpeechAllowed=true;
+							triggerNewSpeechBubble();
+							anim_coin();
+						}
 					}
-					
+					break;
+				case "C_FIRE_COIN":
+				this.y-=10;
+						is_C_FIRE_COIN = true;
+						this.gotoAndStop("fire");
+						particleSystem.playMode("FIRE");
+						selectNewTargetRotation();
+						setToDead();
+						running=false;
+						walking=false;
+						isOnFire=false;
+						isCrispy=true;
 					break;
 				case "METEOR":
 					if(isDead == false){
@@ -263,6 +294,7 @@
 				if(follower != this){
 					if(follower.behaviorState != "SQUISHED" && 
 						follower.behaviorState != "COIN" && 
+						follower.behaviorState != "C_FIRE_COIN" && 
 						follower.behaviorState != "EXPLODED" && 
 						follower.behaviorState != "NONE" && 
 						follower.behaviorState != "CRISPY"){
@@ -367,6 +399,11 @@
 			
 		}
 		
+		private function selectNewTargetRotation():void{
+			targetRotation = 45 - (Math.random()*90);
+			 
+		}
+		
 		private function selectNewWalkTarget():void{
 			var newTarget = Math.abs(Math.random()* 800);
 			if(newTarget > walkTarget){
@@ -402,6 +439,9 @@
 			if(behaviorState == "WALK"){
 				walk();
 			}
+			if(behaviorState == "C_FIRE_COIN"){
+				onFire_Coin();
+			}
 			if(behaviorState == "FIRE"){
 				onFire();
 			}
@@ -409,7 +449,6 @@
 				if(isDead == false){
 					lift();
 				}
-				
 			}
 			if(behaviorState == "LOVE"){
 				love();
@@ -498,29 +537,32 @@
 		
 		//if the guy isn't dead, then allow him to be thrown
 		public function startToss(tossValue:Number):void{
-			this.y-=2;
-			velocity.x =-tossValue/50;
-			velocity.y = -.3*Math.abs(800/tossValue);
-			if(behaviorState != "SQUISHED" && behaviorState != "COIN" && behaviorState != "EXPLODED" && behaviorState != "NONE" && behaviorState != "CRISPY"){
-				var setOnFireChance:Number = Math.random()*10;
-				if(setOnFireChance>9.5){
-					setBehaviorState("FIRE");
+			
+			if(behaviorState != "SQUISHED" 
+			   && behaviorState != "COIN" 
+			   && behaviorState != "EXPLODED" 
+			   && behaviorState != "FALL" 
+			   && behaviorState != "NONE"){
+				this.y-=2;
+				velocity.x =-tossValue/50;
+				velocity.y = -.3*Math.abs(800/tossValue);
+				if(behaviorState != "CRISPY"){
+					var setOnFireChance:Number = Math.random()*10;
+					if(setOnFireChance>9.5){
+						setBehaviorState("FIRE");
+					}
 				}
 				setBehaviorState("FALL");
 			}
-			
 		}
 		
 		private function onHop():void{
-			/*if(this.currentLabel == "hop_eyes_start"){
-				this.eyes.gotoAndPlay("coinLook");
-			}*/
 			if(this.eyes.currentLabel == "coinLook_end"){
 				setBehaviorState("WALK");
 			}
 		}
 		private function fall():void{
-			this.x += velocity.x * friction;
+				this.x += velocity.x * friction;
 				this.y += velocity.y + currentGravity;
 				increaseGravity();
 			if(velocity.y < maxYVelocity){
@@ -536,19 +578,20 @@
 				}
 				
 			}else{
-				//trace(velocity.y);
 				this.y = groundPlane;
 				resetGravity();
 				if(velocity.y >= 30){
 					setBehaviorState("SQUISHED");
 					setToDead();
-					
 				}else if(running){
 					setBehaviorState("FIRE");
 				}else if(walking){
 					setBehaviorState("WALK");
 					selectNewWalkTarget();
 					resumeWalking();
+				}else if(isCrispy){
+					setBehaviorState("CRISPY");
+					this.gotoAndStop("crispy_end");
 				}else{
 					setBehaviorState("WALK");
 					selectNewWalkTarget();
@@ -586,7 +629,46 @@
 			}
 		}
 		
+		private function onFire_Coin():void{
+			//trace("onFire_Coin");
+			try {
+				if(this.eyes.burnMask.alpha < 1){
+					this.eyes.burnMask.alpha+=.005;
+				}
+			}
+			catch(error:Error){
+			}
+			chanceToSpeak();
+			if(is_C_FIRE_COIN){
+				setToDead();
+				
+				if(this.rotation < targetRotation){
+					this.rotation+=.5;
+				}if(this.rotation > targetRotation){
+					this.rotation-=.5;
+				}
+				
+				rocketVelocity.x += ((Math.cos(rotation-.001 / (180 * Math.PI))))*.5;
+       			rocketVelocity.y -= (1-Math.sin(rotation-.001 / (180 * Math.PI)))/25;
+				this.x+=rocketVelocity.x;
+				this.y+=rocketVelocity.y;
+				if(Math.abs(targetRotation-this.rotation) < 5){
+					selectNewTargetRotation();
+				}
+				
+				if(this.y<200){
+					particleSystem.playMode(behaviorState);
+				}
+				if(this.y<-100){
+					setBehaviorState("NONE");
+					particleSystem.playMode(behaviorState);
+				}
+				
+			}
+		}
+		
 		private function onFire():void{
+			//trace("onFire");
 			try {
 				if(this.eyes.burnMask.alpha < 1){
 					this.eyes.burnMask.alpha+=.005;
@@ -609,7 +691,6 @@
 			if(fireTime > maxFireTime){
 				setBehaviorState("CRISPY");
 				this.particleSystem.playMode("NONE");
-				setBehaviorState("NONE");
 			}
 			fireTime++;
 		}
@@ -626,6 +707,7 @@
 		}
 		
 		private function walk():void{
+			//trace("onWalk");
 			chanceToSpeak();
 			anim_walk();
 			if(walking == false){

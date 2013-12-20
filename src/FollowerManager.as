@@ -6,7 +6,7 @@
 		private var leaderStatues:Array = new Array();
 		private var speechBubbles:Array = new Array();
 		private var meteors:Array = new Array();
-		private var maxFollowers:int=50;
+		private var maxFollowers:int=25;
 		private var startToss:Boolean=false;
 		private var startBounce:Boolean=false;
 		public function FollowerManager(){
@@ -99,7 +99,7 @@
 		
 		public function createNewMeteor(follower:MovieClip):void{
 			var index:int = followers.indexOf(follower);
-			var meteor = new P_METEOR();
+			var meteor = new P_BULL();
 			meteor.setFollower(follower);
 			meteor.defineSpawnPoint(follower.getLocation(),follower.getVelocity(),follower.getScale());
 			meteors.push(meteor);
