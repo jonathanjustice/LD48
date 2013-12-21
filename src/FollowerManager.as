@@ -6,6 +6,7 @@
 		private var leaderStatues:Array = new Array();
 		private var speechBubbles:Array = new Array();
 		private var meteors:Array = new Array();
+		private var bulls:Array = new Array();
 		private var maxFollowers:int=25;
 		private var startToss:Boolean=false;
 		private var startBounce:Boolean=false;
@@ -83,6 +84,15 @@
 					meteors.splice(c,1);
 				}
 			}
+			for(var d:int=0;d<bulls.length;d++){
+				//trace(d);
+				bulls[d].updateLoop();
+				if(bulls[d].getMarkedForDeletion() == true){
+					//bulls[d].
+					Main.theStage.removeChild(bulls[d]);
+					bulls.splice(d,1);
+				}
+			}
 		}
 		
 		public function testFunc():void{
@@ -99,13 +109,26 @@
 		
 		public function createNewMeteor(follower:MovieClip):void{
 			var index:int = followers.indexOf(follower);
-			var meteor = new P_BULL();
+			var meteor = new P_METEOR();
 			meteor.setFollower(follower);
 			meteor.defineSpawnPoint(follower.getLocation(),follower.getVelocity(),follower.getScale());
 			meteors.push(meteor);
 			
 			var dislpayIndex:int = follower.parent.getChildIndex(follower);
 			Main.getStage().addChildAt(meteor,dislpayIndex);
+			//Main.theStage.addChild(speechBubble);
+			//trace("bubble");
+		}
+		
+		public function createNewBull(follower:MovieClip):void{
+			var index:int = followers.indexOf(follower);
+			var bull = new P_BULL();
+			bull.setFollower(follower);
+			bull.defineSpawnPoint(follower.getLocation(),follower.getVelocity(),follower.getScale());
+			bulls.push(bull);
+			
+			var dislpayIndex:int = follower.parent.getChildIndex(follower);
+			Main.getStage().addChildAt(bull,dislpayIndex);
 			//Main.theStage.addChild(speechBubble);
 			//trace("bubble");
 		}

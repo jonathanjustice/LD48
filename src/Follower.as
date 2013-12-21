@@ -154,10 +154,8 @@
 		}
 		
 		public override function downHandler(event:MouseEvent):void {
-			//trace(event.target.name);
 			switch (event.target.name) {
 				case "hitbox":
-					//trace("clicked follower");
 					setBehaviorState(Main.getActionIndicator_mouse().getActiveState());
 					break;
 			}
@@ -254,6 +252,17 @@
 						triggerNewSpeechBubble();
 						do_stuff_to_active_followers_inside_the_click_radius_excluding_this("LOOK_UPWARDS");
 						Main.getFollowerManager().createNewMeteor(this);
+						
+					}
+					break;
+				case "BULL":
+					if(isDead == false){
+						setToDead();
+						//anim_meteorLook();
+						isSpeechAllowed=true;
+						triggerNewSpeechBubble();
+						//do_stuff_to_active_followers_inside_the_click_radius_excluding_this("LOOK_UPWARDS");
+						Main.getFollowerManager().createNewBull(this);
 						
 					}
 					break;

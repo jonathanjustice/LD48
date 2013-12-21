@@ -27,19 +27,12 @@
 		private function disabledMouseInteraction():void{
 			this.mouseEnabled=false;
 			this.mouseChildren=false;
-			/*meteor_dirt.mouseEnabled=false;
-			meteor_top.mouseEnabled=false;
-			meteor_bottom.mouseEnabled=false;
-			meteor_dirt.mouseChildren=false;
-			meteor_top.mouseChildren=false;
-			meteor_bottom.mouseChildren=false;*/
+			
 		}
 		
 		public override function doSpecial():void{
 			collisionTime++;
-			lerp();
-			
-			checkForImpact();
+			//checkForImpact();
 		}
 		
 		public function getDesiredY():Number{
@@ -74,27 +67,26 @@
 		}
 		
 		public override function defineSpawnPoint(spawnLocation:Point,spawnVelocity:Point,spawnScale:Number):void{
-			
-			setLifeTime();
-			desiredX = spawnLocation.x;
-			desiredY = spawnLocation.y;
-			setRotationValue();
-			
-			addSomeRandom();
 			scale = Math.abs(spawnScale);
 			this.scaleX = scale;
 			this.scaleY = scale;
-			this.x+=(4.5*scale)+spawnLocation.x + addSomeRandom()*125;
-			this.y+= ((10*scale)+spawnLocation.y )-700 + addSomeRandom();
+			if(Math.random()*10<5){
+				this.x = 150;
+				desiredX = 950;
+				velocity.x=1.5;
+				this.scaleX = -scale;
+			}else{
+				this.x = 650;
+				desiredX = -150;
+				velocity.x=-1.5;
+			}
+			velocity.y=0;
+			this.y+= 19*scale+spawnLocation.y;
+			setLifeTime();
+			setRotationValue();
 			setGravity();
-			//this.y=5;
-			//velocity.x = spawnVelocity.x/25 + addSomeRandom();
-			//velocity.y = Math.abs(spawnVelocity.y/25 + addSomeRandom());
-			//trace("override");
 			particleSystem = new ParticleSystem(this);
-			particleSystem.playMode("METEOR_FALL");
-			
-			
+			//particleSystem.playMode("BULL_DUST");
 		}
 		
 		private function checkForImpact():void{
@@ -110,6 +102,7 @@
 				myFollower.setBehaviorState("SQUISHED");
 				Main.getFollowerManager().tossAllFollowers(this);
 				disabledMouseInteraction();
+				trace("bull");
 			}
 		}
 		
@@ -125,30 +118,15 @@
 			}
 		}
 		
-		private function lerp():void{
-			var lerpAmountX:Number = (desiredX-this.x)*multiplierX;
-			this.x += lerpAmountX;
-			//trace("lerpAmountX",lerpAmountX);
-			//trace("desiredX",desiredX);
-			//trace("this.x",this.x);
-		}
-		
 		public override function setGravity():void{
-			gravity=0.1*scale;
-			gravityIncrement=.001*scale;
-			multiplierX = .055
+			gravity=0;
+			gravityIncrement=0;
+			multiplierX = 0;
 			//this.alpha=.5;
 		}
 		
 		public override function setLifeTime():void{
 			lifeTime = 1000;
 		}
-		
-		public override function addSomeRandom():Number{
-			var randomValue:Number= 2.5-(Math.random()*5);
-			return randomValue;
-		}
-		
-		
 	}
 }

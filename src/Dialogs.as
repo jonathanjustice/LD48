@@ -48,6 +48,7 @@
 		
 		
 		private var C_FIRE_COIN_worship:Array = new Array();
+		private var BULL_worship:Array = new Array();
 		public function Dialogs(){
 			defineDialogs();
 		}
@@ -110,6 +111,15 @@
 							"Leadasdasdasdme!",
 							"Aasdasdasdader",
 							]
+			BULL_worship = ["asdasdasdasd",
+							"asdasdasdasd!",
+							"asdasdasd.",
+							"Aasdasdasdasde.",
+							"Leasdasdasdasdoaches!",
+							"Iasdasdasdader!",
+							"Leadasdasdasdme!",
+							"Aasdasdasdader",
+							]
 			
 		}
 		
@@ -118,6 +128,9 @@
 			switch(arrayName){
 				case "C_FIRE_COIN_worship":
 					activeArray = C_FIRE_COIN_worship;
+					break;
+				case "BULL_worship":
+					activeArray = BULL_worship;
 					break;
 				
 				

@@ -46,6 +46,9 @@
 				case "hitbox_COIN":
 					Main.getActionManager().setActiveAction("COIN");
 					break;
+				case "hitbox_BULL":
+					Main.getActionManager().setActiveAction("BULL");
+					break;
 			}
 		}
 	}
