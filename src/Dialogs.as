@@ -49,6 +49,8 @@
 		
 		private var C_FIRE_COIN_worship:Array = new Array();
 		private var BULL_worship:Array = new Array();
+		private var love_worship:Array = new Array();
+		private var love_ressurect_worship:Array = new Array();
 		public function Dialogs(){
 			defineDialogs();
 		}
@@ -111,14 +113,32 @@
 							"Leadasdasdasdme!",
 							"Aasdasdasdader",
 							]
-			BULL_worship = ["asdasdasdasd",
-							"asdasdasdasd!",
-							"asdasdasd.",
-							"Aasdasdasdasde.",
-							"Leasdasdasdasdoaches!",
-							"Iasdasdasdader!",
-							"Leadasdasdasdme!",
-							"Aasdasdasdader",
+			BULL_worship = ["BULL",
+							"BULL!",
+							"BULL.",
+							"BULL.",
+							"BULL!",
+							"BULL!",
+							"BULL!",
+							"BULL",
+							]
+			love_worship = ["LOVE",
+							"LOVE!",
+							"LOVE.",
+							"LOVE.",
+							"LOVE!",
+							"LOVE!",
+							"LOVE!",
+							"LOVE",
+							]
+			love_ressurect_worship = ["REZURWRECKED",
+							"REZURWRECKED!",
+							"REZURWRECKED.",
+							"REZURWRECKED.",
+							"REZURWRECKED!",
+							"REZURWRECKED!",
+							"REZURWRECKED!",
+							"REZURWRECKED",
 							]
 			
 		}
@@ -131,6 +151,12 @@
 					break;
 				case "BULL_worship":
 					activeArray = BULL_worship;
+					break;
+				case "LOVE_worship":
+					activeArray = love_worship;
+					break;
+				case "LOVE_REZ_worship":
+					activeArray = love_ressurect_worship;
 					break;
 				
 				

@@ -273,6 +273,8 @@
 					anim_hop();
 					break;
 				case "LOVE":
+					isSpeechAllowed=true;
+					triggerNewSpeechBubble();
 					break;
 				case "LIFT":
 					if(isDead == false){
