@@ -86,7 +86,7 @@
 			setRotationValue();
 			setGravity();
 			particleSystem = new ParticleSystem(this);
-			//particleSystem.playMode("BULL_DUST");
+			particleSystem.playMode("BULL_DUST");
 		}
 		
 		private function checkForImpact():void{

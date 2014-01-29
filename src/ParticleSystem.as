@@ -2,6 +2,7 @@
 	import flash.display.MovieClip;
 	import flash.events.*;
 	import flash.geom.Point;
+	import flash.errors.*;
 	public class ParticleSystem extends MovieClip{
 		private var particleMode:String = "";
 		private var fireParticles:Array = new Array();
@@ -58,7 +59,12 @@
 			}
 			if(spawnDelayCounter >= spawnDelay){
 				spawnDelayCounter=0;
-				var index:int = myFollower.parent.getChildIndex(myFollower);
+				var index:int = 0;
+				try{
+					index = myFollower.parent.getChildIndex(myFollower);
+				}catch(e : Error){
+					
+				}
 				
 				switch(particleMode){
 					
@@ -73,6 +79,12 @@
 						p_F.defineSpawnPoint(myFollower.getLocation(),myFollower.getVelocity(),myFollower.getScale());
 						Main.getStage().addChildAt(p_F,index);
 						fireParticles.push(p_F);
+						break;
+					case "BULL_DUST":
+						var p_BULL_DUST:P_BULL_DUST = new P_BULL_DUST();
+						p_BULL_DUST.defineSpawnPoint(myFollower.getLocation(),myFollower.getVelocity(),myFollower.getScale());
+						Main.getStage().addChildAt(p_BULL_DUST,index);
+						fireParticles.push(p_BULL_DUST);
 						break;
 					case "C_FIRE_COIN":
 						var tempPoint2:Point=new Point();
