@@ -4,20 +4,31 @@
 	public class P_BULL_DUST extends Particle{
 		private var scaleMultiplier:Number=1.08;
 		private var groundPlane:Number=0;
+		private var runningDirection:String="";
 		public function P_BULL_DUST(){
 			
 		}
 		
+		public function setRunningDirection(newDir:String):void{
+			runningDirection = newDir;
+		}
 		
 		public override function defineSpawnPoint(spawnLocation:Point,spawnVelocity:Point,spawnScale:Number):void{
-			
+			scale = Math.abs(spawnScale);
 			setLifeTime();
 			setRotationValue();
+			this.x+=spawnLocation.x;
+			//this.x+=(4.5*scale)+spawnLocation.x + addSomeRandom();
+			this.y+=(4.5*scale)+spawnLocation.y + addSomeRandom();
+			if(runningDirection == "LEFT"){
+				this.x += 40*scale;
+			}else{
+				this.x -= 40*scale;
+				//trace("left");
+			}
 			
-			this.x+=(4.5*scale)+spawnLocation.x + addSomeRandom();
-			this.y+=(10*scale)+spawnLocation.y + addSomeRandom();
+			
 			//addSomeRandom();
-			scale = Math.abs(spawnScale);
 			this.scaleX = scale;
 			this.scaleY = scale;
 			//this.x+=  addSomeFrontRandom();

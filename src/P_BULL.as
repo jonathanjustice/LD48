@@ -86,7 +86,12 @@
 			setRotationValue();
 			setGravity();
 			particleSystem = new ParticleSystem(this);
-			particleSystem.playMode("BULL_DUST");
+			if(velocity.x > 0){
+				particleSystem.playMode("BULL_DUST_RIGHT");
+			}else{
+				particleSystem.playMode("BULL_DUST_LEFT");
+			}
+			
 		}
 		
 		private function checkForImpact():void{
