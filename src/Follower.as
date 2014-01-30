@@ -25,6 +25,7 @@
 		private var lerpMax:Number=.01;
 		private var multiplier:Number=0;
 		private var multiplier_fire:Number=.05;
+		private var multiplier_squishedWalk:Number=.00001;
 		private var multiplier_lift_X:Number=.1;
 		private var multiplier_lift_Y:Number=.1;
 		private var behaviorState:String="";
@@ -50,6 +51,7 @@
 		private var maxYVelocity:int=-30;
 		private var isDead:Boolean=false;
 		private var isCrispy:Boolean=false;
+		private var isSquished:Boolean=false;
 		private var isOnFire:Boolean=false;
 		private var is_C_FIRE_COIN:Boolean = false;
 		private var targetRotation:Number=0;
@@ -86,6 +88,7 @@
 				happiness = "_worship";
 			}
 			mood = behaviorState + happiness;
+			trace("mood:",mood);
 			dialog = Main.getDialogs().selectDialog(mood);
 			//trace("dialog:",dialog);
 		}
@@ -178,6 +181,8 @@
 				case "SQUISHED":
 					setToDead();
 					anim_squished();
+					isSquished = true;
+					trace("isSquished",isSquished);
 					//particleSystem.playMode(behaviorState);
 					//particleSystem.playMode("NONE");
 					break;
@@ -229,6 +234,8 @@
 							isSpeechAllowed=true;
 							triggerNewSpeechBubble();
 							anim_coin();
+							isSquished = true;
+							trace("isSquished",isSquished);
 						}
 					}
 					break;
@@ -243,6 +250,7 @@
 						walking=false;
 						isOnFire=false;
 						isCrispy=true;
+						triggerNewSpeechBubble();
 					break;
 				case "METEOR":
 					if(isDead == false){
@@ -273,9 +281,41 @@
 					anim_hop();
 					break;
 				case "LOVE":
+					if(isDead==true){
+						if(isCrispy == true){//if crispy dead
+							setBehaviorState("LOVE_CRISPY");
+						}else if (!isCrispy && isOnFire){//if on fire and not crispy yet
+						//this should actually never happen
+							trace("this should actually never happen");
+							
+						}else if(isSquished){
+							trace("ressurect now");
+							setBehaviorState("SQUISHED_WALK");
+						}
+					}else if(isDead == false){
+						trace("LOVE now");
+						 if(!isCrispy && isOnFire){//if on fire and not crispy yet
+							trace("not dead yet");
+							this.eyes.gotoAndPlay("center");
+							walking=true;
+							isOnFire=false;
+							this.eyes.burnMask.alpha=0;
+							this.eyes.burnMask.visible=false;
+							setBehaviorState("NONE");
+							setBehaviorState("WALK");
+						 }
+					}
 					isSpeechAllowed=true;
 					triggerNewSpeechBubble();
 					break;
+				case "SQUISHED_WALK":
+						anim_ressurecting();
+						this.eyes.visible=false;
+						running=false;
+						walking=true;
+						minDistanceBetweenOldAndNewTargets = minDistanceBetweenOldAndNewTargets_walk;
+						maxDistanceBetweenOldAndNewTargets = maxDistanceBetweenOldAndNewTargets_walk;
+						break;
 				case "LIFT":
 					if(isDead == false){
 						anim_lifted();
@@ -317,11 +357,11 @@
 		
 		private function setToDead():void{
 			isDead = true;
-			abortInput();
+			//abortInput();
 			this.eyes.burnMask.mouseEnabled=false;
 			this.eyes.burnMask.mouseChildren=false;
-			this.mouseEnabled=false;
-			this.mouseChildren=false;
+			//this.mouseEnabled=false;
+			//this.mouseChildren=false;
 		}
 		
 		private function anim_meteorLook():void{
@@ -350,6 +390,14 @@
 			}
 						
 			
+		}
+		
+		private function anim_ressurected():void{
+			this.gotoAndPlay("ressurected");
+		}
+		
+		private function anim_ressurecting():void{
+			this.gotoAndPlay("ressurecting");
 		}
 		
 		private function anim_lifted():void{
@@ -406,6 +454,9 @@
 					multiplier = lerpMin + Math.random()* lerpMax;
 					setMultiplier(multiplier,0);
 					break;
+				case "SQUISHED_WALK":
+					setMultiplier(multiplier_squishedWalk,multiplier_squishedWalk);
+					break;
 			}
 			
 		}
@@ -447,6 +498,19 @@
 		}
 		
 		public function updateLoop():void{
+			if(behaviorState == "LOVE_SQUISHED"){
+				//walk();
+			}
+			if(behaviorState == "SQUISHED_WALK"){
+				onSquishedWalk();
+			}
+			if(behaviorState == "LOVE_CRISPY"){
+				//walk();
+			}
+			
+			if(behaviorState == "LOVE_FIRE"){
+				walk();
+			}
 			if(behaviorState == "WALK"){
 				walk();
 			}
@@ -478,6 +542,7 @@
 			}
 			if(behaviorState == "SQUISHED"){
 				//setScreenBounds();
+					
 				onSquished();
 			}
 			if(behaviorState == "HOP"){
@@ -630,6 +695,8 @@
 		}
 		
 		private function onSquished():void{
+			isSquished = true;
+			trace("isSquished",isSquished);
 			particleSystem.playMode(behaviorState);
 			if(this.currentLabel != "squished_end"){
 				particleSystem.playMode("SQUISHED");
@@ -675,6 +742,28 @@
 					particleSystem.playMode(behaviorState);
 				}
 				
+			}
+		}
+		
+		private function onSquishedWalk():void{
+			
+			//trace("onWalk");
+			chanceToSpeak();
+			if(walking == false){
+				pauseTime--;
+				if(pauseTime > 0){
+				}else if(pauseTime==0){
+					resumeWalking();
+				}
+			}
+			
+			if(walking){
+				var lerpAmount:Number =  (walkTarget-this.x)*multiplier;
+				
+				this.x += lerpAmount;
+				if(Math.abs(walkTarget-this.x) < 50){
+					pauseWalking();
+				}
 			}
 		}
 		

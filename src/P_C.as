@@ -11,6 +11,10 @@
 			rotationValue = addSomeRandom()/5;
 		}
 		
+		public override function defineSpecialCaseStats():void{
+			this.y-=(25*scale);
+		}
+		
 		public override function setGravity():void{
 			gravity=-0.5;
 			gravityIncrement=+.015;

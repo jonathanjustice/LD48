@@ -50,7 +50,8 @@
 		private var C_FIRE_COIN_worship:Array = new Array();
 		private var BULL_worship:Array = new Array();
 		private var love_worship:Array = new Array();
-		private var love_ressurect_worship:Array = new Array();
+		private var squished_walk_worship:Array = new Array();
+		private var love_crispy_worship:Array = new Array();
 		public function Dialogs(){
 			defineDialogs();
 		}
@@ -81,7 +82,7 @@
 							"Leader blesses me with fire.",
 							"The flames are Leader's love!",
 							"Leader gives me fire!",
-							"I brun with Leader's love",
+							"I burn with Leader's love",
 							"I am Leader's torch!",
 							"I am Leader's light!",
 							"I am bestowed with fire. Leader chooses me."
@@ -102,16 +103,16 @@
 							"Leader's glowing love approaches!",
 							"I see Leader!",
 							"Leader is coming for me!",
-							"A gift of love from Leader",
+							"A gift of love from Leader.",
 							]
-			C_FIRE_COIN_worship = ["asdasdasdasd",
-							"asdasdasdasd!",
-							"asdasdasd.",
-							"Aasdasdasdasde.",
-							"Leasdasdasdasdoaches!",
-							"Iasdasdasdader!",
-							"Leadasdasdasdme!",
-							"Aasdasdasdader",
+			C_FIRE_COIN_worship = ["Love Lifts",
+							"I fly with love!",
+							"I fly to love.",
+							"I shoot to leader.",
+							"Love propels me upward!",
+							"I rise with love!",
+							"Leader fires me up!",
+							"Leader calls me to him.",
 							]
 			BULL_worship = ["BULL",
 							"BULL!",
@@ -131,14 +132,23 @@
 							"LOVE!",
 							"LOVE",
 							]
-			love_ressurect_worship = ["REZURWRECKED",
-							"REZURWRECKED!",
-							"REZURWRECKED.",
-							"REZURWRECKED.",
-							"REZURWRECKED!",
-							"REZURWRECKED!",
-							"REZURWRECKED!",
-							"REZURWRECKED",
+			squished_walk_worship = ["Glurkglled.. I...I...Live for Leader!",
+							"Bloruergkred looorgfurhve me Leader!",
+							"SheeorugLeeeader life me from the grave.",
+							"Love.. *GURGLE* restores all.",
+							"Iiii... ammmmglrrh blessed!",
+							"My soul... Brleruough... lives again.",
+							"LoooaAAAaaaAhhhaaaAAArrrgghve!",
+							"Leader n-n-needs my pain.",
+							]
+			love_crispy_worship = ["FIRE ALIVE!",
+							"FIRE ALIVE!",
+							"FIRE ALIVE.",
+							"FIRE ALIVE.",
+							"FIRE ALIVE!",
+							"FIRE ALIVE.",
+							"FIRE ALIVE!",
+							"FIRE ALIVE.",
 							]
 			
 		}
@@ -155,12 +165,12 @@
 				case "LOVE_worship":
 					activeArray = love_worship;
 					break;
-				case "LOVE_REZ_worship":
-					activeArray = love_ressurect_worship;
+				case "SQUISHED_WALK_worship":
+					activeArray = squished_walk_worship;
 					break;
-				
-				
-				
+					case "LOVE_CRISPY_worship":
+					activeArray = love_crispy_worship;
+					break;
 				case "WALK_worship":
 					activeArray = walk_worship;
 					break;

@@ -49,6 +49,7 @@
 			//var index:int = parent.getChildIndex(parent);
 			Main.theStage.addChildAt(this,0);
 			*/
+			defineSpecialCaseStats();
 		}
 		
 		public function addSomeRandom():Number{
@@ -57,6 +58,10 @@
 		}
 		
 		public function setGravity():void{
+			//child classes do this
+		}
+		
+		public function defineSpecialCaseStats():void{
 			//child classes do this
 		}
 		
