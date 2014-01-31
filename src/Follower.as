@@ -57,6 +57,7 @@
 		private var targetRotation:Number=0;
 		private var rocketVelocity:Point=new Point(0,-.5);
 		private var rocketSpeed:int=5;
+		private var isBeingTossed:Boolean=false;
 		public function Follower(){
 			setUp();
 			initialSetup();
@@ -88,7 +89,7 @@
 				happiness = "_worship";
 			}
 			mood = behaviorState + happiness;
-			trace("mood:",mood);
+			//trace("mood:",mood);
 			dialog = Main.getDialogs().selectDialog(mood);
 			//trace("dialog:",dialog);
 		}
@@ -113,7 +114,7 @@
 		}
 		
 		private function initialSetup():void{
-			this.eyes.burnMask.alpha=1;
+			//this.eyes.burnMask.alpha=1;
 			particleSystem = new ParticleSystem(this);
 			setBehaviorState("WALK");
 			this.x = Math.round(Math.random()* 780);
@@ -165,7 +166,7 @@
 		}
 		
 		public function setBehaviorState(newState:String):void{
-			
+			//trace("setBehaviorState",setBehaviorState);
 			behaviorState = newState;
 			switch (newState){
 				case "null":
@@ -182,12 +183,17 @@
 					setToDead();
 					anim_squished();
 					isSquished = true;
-					trace("isSquished",isSquished);
-					//particleSystem.playMode(behaviorState);
-					//particleSystem.playMode("NONE");
+					var chanceToFlipLeftOrRight_2:Number = Math.random() * 10;
+					if (chanceToFlipLeftOrRight_2 < 5) {
+						this.scaleX *= -1;
+					}
 					break;
 				case "FIRE":
-					if (isDead == false) {
+					if(isCrispy == true){
+						behaviorState = "CRISPY";
+						this.eyes.burnMask.alpha=1;
+					}else if (isDead == false) {
+						//trace("dead");
 						var chanceToFlipLeftOrRight:Number = Math.random() * 10;
 						if (chanceToFlipLeftOrRight < 5) {
 							this.scaleX *= -1;
@@ -206,6 +212,9 @@
 						walking=false;
 						isOnFire=true;
 						selectNewWalkTarget();
+					}else if(isSquished == true){
+					}else{
+						trace("else");
 					}
 					break;
 				case "CRISPY":
@@ -235,7 +244,6 @@
 							triggerNewSpeechBubble();
 							anim_coin();
 							isSquished = true;
-							trace("isSquished",isSquished);
 						}
 					}
 					break;
@@ -265,13 +273,22 @@
 					break;
 				case "BULL":
 					if(isDead == false){
-						setToDead();
-						//anim_meteorLook();
+						//setToDead();
 						isSpeechAllowed=true;
 						triggerNewSpeechBubble();
-						//do_stuff_to_active_followers_inside_the_click_radius_excluding_this("LOOK_UPWARDS");
 						Main.getFollowerManager().createNewBull(this);
+						//running=true;
 						
+						
+						if(isOnFire == true){
+							var preBullAlpha:Number=this.eyes.burnMask.alpha;
+							setBehaviorState("FIRE");
+							this.eyes.burnMask.alpha=preBullAlpha;
+							running=true;
+						}else{
+							setBehaviorState("WALK");
+							walking=true;
+						}
 					}
 					break;
 				case "LOOK_UPWARDS":
@@ -284,18 +301,11 @@
 					if(isDead==true){
 						if(isCrispy == true){//if crispy dead
 							setBehaviorState("LOVE_CRISPY");
-						}else if (!isCrispy && isOnFire){//if on fire and not crispy yet
-						//this should actually never happen
-							trace("this should actually never happen");
-							
 						}else if(isSquished){
-							trace("ressurect now");
 							setBehaviorState("SQUISHED_WALK");
 						}
 					}else if(isDead == false){
-						trace("LOVE now");
 						 if(!isCrispy && isOnFire){//if on fire and not crispy yet
-							trace("not dead yet");
 							this.eyes.gotoAndPlay("center");
 							walking=true;
 							isOnFire=false;
@@ -303,6 +313,10 @@
 							this.eyes.burnMask.visible=false;
 							setBehaviorState("NONE");
 							setBehaviorState("WALK");
+						 }else{
+							//not dead
+							setBehaviorState("WALK");
+							triggerNewSpeechBubble();
 						 }
 					}
 					isSpeechAllowed=true;
@@ -612,24 +626,37 @@
 		}
 		
 		//if the guy isn't dead, then allow him to be thrown
-		public function startToss(tossValue:Number):void{
-			
+		public function startToss(tossValue:Number,tossMode:String="none"):void{
+			var preBullAlpha:Number=this.eyes.burnMask.alpha;
 			if(behaviorState != "SQUISHED" 
 			   && behaviorState != "COIN" 
 			   && behaviorState != "EXPLODED" 
 			   && behaviorState != "FALL" 
-			   && behaviorState != "NONE"){
+			   && behaviorState != "NONE"
+			   && isBeingTossed == false){
 				this.y-=2;
-				velocity.x =-tossValue/50;
-				velocity.y = -.3*Math.abs(800/tossValue);
-				if(behaviorState != "CRISPY"){
-					var setOnFireChance:Number = Math.random()*10;
-					if(setOnFireChance>9.5){
-						setBehaviorState("FIRE");
+				isBeingTossed=true;
+				switch(tossMode){
+					case "bull":
+						//sdfsdfd
+						var bullModifier:Number = Math.random()*150 -75;
+						velocity.y = -.3*Math.abs((200+bullModifier)/tossValue);
+						velocity.x = bullModifier/10;
+						break;
+					case"none":
+						velocity.y = -.3*Math.abs(800/tossValue);
+						velocity.x = -tossValue/50;
+						if(behaviorState != "CRISPY"){
+						var setOnFireChance:Number = Math.random()*10;
+						if(setOnFireChance>9.5){
+							setBehaviorState("FIRE");
+						}
 					}
+						break;
 				}
 				setBehaviorState("FALL");
 			}
+			this.eyes.burnMask.alpha=preBullAlpha;
 		}
 		
 		private function onHop():void{
@@ -654,8 +681,10 @@
 				}
 				
 			}else{
+			var preBullAlpha:Number=this.eyes.burnMask.alpha;
 				this.y = groundPlane;
 				resetGravity();
+				isBeingTossed=false;
 				if(velocity.y >= 30){
 					setBehaviorState("SQUISHED");
 					setToDead();
@@ -673,6 +702,8 @@
 					selectNewWalkTarget();
 					resumeWalking();
 				}
+				
+			this.eyes.burnMask.alpha=preBullAlpha;
 			}
 		}
 		
@@ -696,7 +727,6 @@
 		
 		private function onSquished():void{
 			isSquished = true;
-			trace("isSquished",isSquished);
 			particleSystem.playMode(behaviorState);
 			if(this.currentLabel != "squished_end"){
 				particleSystem.playMode("SQUISHED");
@@ -708,7 +738,6 @@
 		}
 		
 		private function onFire_Coin():void{
-			//trace("onFire_Coin");
 			try {
 				if(this.eyes.burnMask.alpha < 1){
 					this.eyes.burnMask.alpha+=.005;
@@ -768,7 +797,6 @@
 		}
 		
 		private function onFire():void{
-			//trace("onFire");
 			try {
 				if(this.eyes.burnMask.alpha < 1){
 					this.eyes.burnMask.alpha+=.005;

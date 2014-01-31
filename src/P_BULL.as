@@ -32,7 +32,7 @@
 		
 		public override function doSpecial():void{
 			collisionTime++;
-			//checkForImpact();
+			checkForImpact();
 		}
 		
 		public function getDesiredY():Number{
@@ -95,19 +95,14 @@
 		}
 		
 		private function checkForImpact():void{
-			if(this.y > desiredY){
-				/*meteor_dirt.visible=true;
-				meteor_top.visible=true;
-				meteor_bottom.visible=false;*/
-				setIsActive(false);
-				this.y=desiredY+10*scale;
-				//trace("this.y",this.y);
-				this.particleSystem.playMode("NONE");
-				timeExisted=950;
-				myFollower.setBehaviorState("SQUISHED");
-				Main.getFollowerManager().tossAllFollowers(this);
-				disabledMouseInteraction();
-				trace("bull");
+			if(this.hitTestObject(myFollower)){
+				//setIsActive(false);
+				//this.particleSystem.playMode("NONE");
+				myFollower.startToss(5,"bull");
+				//myFollower.setBehaviorState("SQUISHED");
+				//Main.getFollowerManager().tossAllFollowers(this);
+				//disabledMouseInteraction();
+				//trace("bull");
 			}
 		}
 		
