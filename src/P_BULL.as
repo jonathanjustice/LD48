@@ -11,6 +11,7 @@
 		private var multiplierX:Number=.015;
 		private var collisionTime:int=0;
 		private var particleSystem:ParticleSystem;
+		private var particleSystem2:ParticleSystem;
 		//private var velocity:Point=new Point();
 		private var previousPosition:Point=new Point();
 		private var myFollower:MovieClip=new MovieClip();
@@ -86,6 +87,7 @@
 			setRotationValue();
 			setGravity();
 			particleSystem = new ParticleSystem(this);
+			particleSystem2 = new ParticleSystem(this);
 			if(velocity.x > 0){
 				particleSystem.playMode("BULL_DUST_RIGHT");
 			}else{
@@ -94,8 +96,13 @@
 			
 		}
 		
+		public function setOnFire():void{
+			particleSystem2.playMode("BULL_FIRE");
+		}
+		
 		private function checkForImpact():void{
-			if(this.hitTestObject(myFollower)){
+			if(this.hitbox.hitTestObject(myFollower)){
+				setOnFire();
 				//setIsActive(false);
 				//this.particleSystem.playMode("NONE");
 				myFollower.startToss(5,"bull");
@@ -114,6 +121,7 @@
 				//trace("doSpecialInactiveStuff");
 				//markForDeletion();
 				
+				particleSystem2.abortAll();
 				particleSystem.abortAll();
 			}
 		}

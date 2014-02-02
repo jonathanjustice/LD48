@@ -87,6 +87,13 @@
 						Main.getStage().addChildAt(p_BULL_DUST,index);
 						fireParticles.push(p_BULL_DUST);
 						break;
+					case "BULL_FIRE":
+						var p_BULL_FIRE:P_F = new P_F();
+						//p_BULL_FIRE.setRunningDirection("LEFT");
+						p_BULL_FIRE.defineSpawnPoint(myFollower.getLocation(),myFollower.getVelocity(),myFollower.getScale());
+						Main.getStage().addChildAt(p_BULL_FIRE,index);
+						fireParticles.push(p_BULL_FIRE);
+						break;
 					case "BULL_DUST_RIGHT":
 						var p_BULL_DUST_R:P_BULL_DUST = new P_BULL_DUST();
 						p_BULL_DUST_R.setRunningDirection("RIGHT");
