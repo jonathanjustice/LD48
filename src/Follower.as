@@ -203,6 +203,7 @@
 				walking=false;
 				isOnFire=true;
 				selectNewWalkTarget();
+				enableInput();
 			}else if(isSquished == true){
 			}else{
 				trace("else");
@@ -253,7 +254,6 @@
 			triggerNewSpeechBubble();
 			disableInput();
 		}
-		
 		
 		private function METEOR_handler():void{
 			if(isDead == false){
@@ -340,6 +340,7 @@
 		
 		private function WALK_handler():void{
 			if(isDead == false){
+				enableInput();
 				running=false;
 				minDistanceBetweenOldAndNewTargets = minDistanceBetweenOldAndNewTargets_walk;
 				maxDistanceBetweenOldAndNewTargets = maxDistanceBetweenOldAndNewTargets_walk;
@@ -349,12 +350,13 @@
 		
 		private function LOOK_UPWARDS_handler():void{
 			this.eyes.gotoAndPlay("meteor");
+				enableInput();
 		}
 		
 		
 		
 		public function setBehaviorState(newState:String):void{
-			//trace("setBehaviorState",setBehaviorState);
+			//trace("setBehaviorState",newState);
 			behaviorState = newState;
 			switch (newState){
 				case "null":
@@ -436,8 +438,8 @@
 		private function enableInput():void{
 			this.eyes.burnMask.mouseEnabled=true;
 			this.eyes.burnMask.mouseChildren=true;
-			//this.mouseEnabled=true;
-			//this.mouseChildren=true;
+			this.mouseEnabled=true;
+			this.mouseChildren=true;
 		}
 		
 		private function setToDead():void{
@@ -709,7 +711,6 @@
 				isBeingTossed=true;
 				switch(tossMode){
 					case "bull":
-						//sdfsdfd
 						var bullModifier:Number = Math.random()*150 -75;
 						velocity.y = -.3*Math.abs((200+bullModifier)/tossValue);
 						velocity.x = bullModifier/10;
@@ -718,11 +719,11 @@
 						velocity.y = -.3*Math.abs(800/tossValue);
 						velocity.x = -tossValue/50;
 						if(behaviorState != "CRISPY"){
-						var setOnFireChance:Number = Math.random()*10;
-						if(setOnFireChance>9.5){
-							setBehaviorState("FIRE");
+							var setOnFireChance:Number = Math.random()*10;
+							if(setOnFireChance>9.5){
+								setBehaviorState("FIRE");
+							}
 						}
-					}
 						break;
 				}
 				setBehaviorState("FALL");
@@ -743,6 +744,7 @@
 				velocity.y = maxYVelocity;
 			}
 			if(this.y < groundPlane){
+				//this.alpha=.5;
 				
 				if(this.x > screenBounds){
 					velocity.x*=-1;
@@ -756,10 +758,12 @@
 				this.y = groundPlane;
 				resetGravity();
 				isBeingTossed=false;
+				//this.alpha=1;
 				if(velocity.y >= 30){
 					setBehaviorState("SQUISHED");
 					setToDead();
 					enableInput();
+					Main.getStage().setScreenShake(true,"COIN");
 				}else if(running){
 					setBehaviorState("FIRE");
 					enableInput();
@@ -796,7 +800,6 @@
 				particleSystem.playMode(behaviorState);
 			}
 			if(this.currentLabel == "coinEnd"){
-				
 				Main.getStage().setScreenShake(true,"COIN");
 				setBehaviorState("EXPLODED");
 			}

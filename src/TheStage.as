@@ -86,9 +86,10 @@
 					shakeRandomNess.y=10;
 					break;
 				case "COIN":
+				trace("SQUISH");
 					shakeTimer=0;
 					maxShakeTime = 10;
-					this.y-=25;
+					this.y-=10;
 					shakeRandomNess.x=20;
 					shakeRandomNess.y=10;
 					break;
