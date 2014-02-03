@@ -6,7 +6,9 @@
 		private var screenLerpX:Number=.07;
 		private var screenLerpY:Number=.07;
 		public function ActionMenu(){
-			this.x = Main.theStage.stageWidth+this.width+250;
+			trace(Main.theStage);
+			trace(Main.theStage.width);
+			this.x = Main.theStage.width+this.width+250;
 			setUp();
 			stop();
 			arrangeScreen();
@@ -22,7 +24,7 @@
 		}
 		
 		public function updateScreenLocation():void{
-			desiredX = Main.theStage.stageWidth - (Main.theStage.stageWidth-Main.originalStageX)/2;
+			desiredX = Main.theStage.width - (Main.theStage.width-Main.originalStageX);
 			desiredY = 0;
 			
 		}

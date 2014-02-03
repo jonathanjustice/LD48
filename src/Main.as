@@ -7,10 +7,11 @@
 			import flash.ui.Mouse;
 	public class Main extends MovieClip{
 		public static var dialogs:Dialogs;
+		public static var theStage:TheStage = new TheStage;
 		public static var followerManager:FollowerManager;
 		public static var actionManager;ActionManager;
 		public static var actionIndicator_mouse:ActionIndicator_mouse;
-		public static var theStage:Object;
+		public static var uiContainter:Object;
 		private var actionMenu:ActionMenu;
 		private var leader_Title:Leader_Title;
 		private var stageNode:StageNode;
@@ -23,7 +24,6 @@
 		
 		//once the stage exists, launch the game
         private function init(e:Event = null):void {
-			theStage = this.stage;
             removeEventListener(Event.ADDED_TO_STAGE, init);
 			//stage.scaleMode = StageScaleMode.NO_SCALE;
 			
@@ -35,10 +35,15 @@
         }
 		
 		private function setUp():void{
+			
+			
+			uiContainter = stage;
+			theStage.addChild(bg_art);
+			stage.addChild(theStage);
+			theStage.hitbox.visible=false;
 			Mouse.hide();
 			addKeyboardInput();
 			leader_Title = new Leader_Title();
-			stage.addChild(bg_art);
 			stage.addChild(leader_Title);
 			dialogs = new Dialogs();
 			actionMenu = new ActionMenu();
@@ -89,8 +94,9 @@
 			//trace("stage.width",stage.width);
 			//trace("stage.stageWidth",stage.stageWidth);
 			actionMenu.updateScreenLocation();
-			stage.setChildIndex(actionIndicator_mouse, parent.numChildren-1)
+			uiContainter.setChildIndex(actionIndicator_mouse, parent.numChildren-1)
 			actionMenu.lerpToPosition();
+			theStage.updateScreenLocation();
 			actionIndicator_mouse.setMouseCoordinates(stage.mouseX,stage.mouseY);
 			actionIndicator_mouse.lerpToPosition();
 			leader_Title.lerpToPosition();
@@ -119,6 +125,10 @@
 		
 		public static function getStage():Object{
 			return theStage;
+		}
+		
+		public static function getNewStage():Object{
+			return uiContainter;
 		}
 	}
 }

@@ -24,7 +24,6 @@
 				this.x += 40*scale;
 			}else{
 				this.x -= 40*scale;
-				//trace("left");
 			}
 			
 			

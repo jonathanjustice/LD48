@@ -63,7 +63,8 @@
 				try{
 					index = myFollower.parent.getChildIndex(myFollower);
 				}catch(e : Error){
-					
+					//if this throws an error, I should kill the particle immediately
+					trace("remember to kill this particle");
 				}
 				
 				switch(particleMode){
@@ -88,11 +89,7 @@
 						fireParticles.push(p_BULL_DUST);
 						break;
 					case "BULL_FIRE":
-						var p_BULL_FIRE:P_F = new P_F();
-						//p_BULL_FIRE.setRunningDirection("LEFT");
-						p_BULL_FIRE.defineSpawnPoint(myFollower.getLocation(),myFollower.getVelocity(),myFollower.getScale());
-						Main.getStage().addChildAt(p_BULL_FIRE,index);
-						fireParticles.push(p_BULL_FIRE);
+						
 						break;
 					case "BULL_DUST_RIGHT":
 						var p_BULL_DUST_R:P_BULL_DUST = new P_BULL_DUST();
@@ -101,6 +98,40 @@
 						Main.getStage().addChildAt(p_BULL_DUST_R,index);
 						fireParticles.push(p_BULL_DUST_R);
 						break;
+					case "BULL_DUST_RIGHT_FIRE":
+						var p_BULL_DUST_R_F:P_BULL_DUST = new P_BULL_DUST();
+						p_BULL_DUST_R_F.setRunningDirection("RIGHT");
+						p_BULL_DUST_R_F.defineSpawnPoint(myFollower.getLocation(),myFollower.getVelocity(),myFollower.getScale());
+						Main.getStage().addChildAt(p_BULL_DUST_R_F,index);
+						fireParticles.push(p_BULL_DUST_R_F);
+						
+						var p_BULL_FIRE_R:P_F = new P_F();
+						p_BULL_FIRE_R.defineSpawnPoint(myFollower.getFireLocation(),myFollower.getVelocity(),myFollower.getScale());
+						Main.getStage().addChildAt(p_BULL_FIRE_R,index);
+						fireParticles.push(p_BULL_FIRE_R);
+					
+						
+						break;
+					case "BULL_DUST_LEFT_FIRE":
+						var p_BULL_DUST_L_F:P_BULL_DUST = new P_BULL_DUST();
+						p_BULL_DUST_L_F.setRunningDirection("LEFT");
+						p_BULL_DUST_L_F.defineSpawnPoint(myFollower.getLocation(),myFollower.getVelocity(),myFollower.getScale());
+						Main.getStage().addChildAt(p_BULL_DUST_L_F,index);
+						fireParticles.push(p_BULL_DUST_L_F);
+						
+						var p_BULL_FIRE_L:P_F = new P_F();
+						p_BULL_FIRE_L.defineSpawnPoint(myFollower.getFireLocation(),myFollower.getVelocity(),myFollower.getScale());
+						Main.getStage().addChildAt(p_BULL_FIRE_L,index);
+						fireParticles.push(p_BULL_FIRE_L);
+					
+						
+						break;
+						
+						
+						
+						
+						
+						
 					case "C_FIRE_COIN":
 						var tempPoint2:Point=new Point();
 							tempPoint2.y = (myFollower.getVelocity().y+myFollower.getScale());

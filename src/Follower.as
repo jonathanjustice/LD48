@@ -618,7 +618,7 @@
 			
 		
 		private function setScreenBounds():void{
-			screenBounds = Main.theStage.stageWidth - (Main.theStage.stageWidth-Main.originalStageX)/2;
+			screenBounds = Main.theStage.width - (Main.theStage.width-Main.originalStageX)/2;
 		}
 		
 		public function startBounce():void{
@@ -721,6 +721,7 @@
 			}
 			if(this.currentLabel == "coinEnd"){
 				
+				Main.getStage().setScreenShake(true,"COIN");
 				setBehaviorState("EXPLODED");
 			}
 		}

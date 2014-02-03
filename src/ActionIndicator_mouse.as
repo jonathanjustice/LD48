@@ -15,6 +15,13 @@
 			hitbox.visible = false;
 		}
 		
+		public override function addScreenToUIContainer():void{
+			//trace(this);
+			//trace(Main);
+			//trace(Main.theStage);
+			Main.getNewStage().addChild(this);
+		}
+		
 		public override function setUp():void {
 			//addDynamicBlocker();
 			//addClickHandler();

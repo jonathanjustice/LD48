@@ -87,6 +87,7 @@
 			//trace("override");
 			particleSystem = new ParticleSystem(this);
 			particleSystem.playMode("METEOR_FALL");
+			//Main.getStage().setScreenShake(true,"METEOR_FALL");
 			
 			
 		}
@@ -104,6 +105,7 @@
 				myFollower.setBehaviorState("SQUISHED");
 				Main.getFollowerManager().tossAllFollowers(this);
 				disabledMouseInteraction();
+				Main.getStage().setScreenShake(true,"METEOR_IMPACT");
 			}
 		}
 		

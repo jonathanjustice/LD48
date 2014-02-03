@@ -11,10 +11,11 @@
 		private var multiplierX:Number=.015;
 		private var collisionTime:int=0;
 		private var particleSystem:ParticleSystem;
-		private var particleSystem2:ParticleSystem;
+		//private var particleSystem2:ParticleSystem;
 		//private var velocity:Point=new Point();
 		private var previousPosition:Point=new Point();
 		private var myFollower:MovieClip=new MovieClip();
+		private var bullDirection:String="";
 		public function P_BULL(){
 			/*meteor_dirt.visible=false;
 			meteor_top.visible=true;
@@ -32,8 +33,8 @@
 		}
 		
 		public override function doSpecial():void{
-			collisionTime++;
 			checkForImpact();
+			checkForExitScreen();
 		}
 		
 		public function getDesiredY():Number{
@@ -59,6 +60,17 @@
 			return loc;
 		}
 		
+		public function getFireLocation():Point{
+			var xDir
+			if(bullDirection == "LEFT"){
+				xDir = this.x+60;
+			}else if(bullDirection == "RIGHT"){
+				xDir = this.x-80;
+			}
+			var loc:Point = new Point(xDir,this.y-30);
+			return loc;
+		}
+		
 		public function getScale():Number{
 			return this.scaleX;
 		}
@@ -72,12 +84,12 @@
 			this.scaleX = scale;
 			this.scaleY = scale;
 			if(Math.random()*10<5){
-				this.x = 150;
+				this.x = -50;
 				desiredX = 950;
 				velocity.x=1.5;
 				this.scaleX = -scale;
 			}else{
-				this.x = 650;
+				this.x = 850;
 				desiredX = -150;
 				velocity.x=-1.5;
 			}
@@ -87,25 +99,39 @@
 			setRotationValue();
 			setGravity();
 			particleSystem = new ParticleSystem(this);
-			particleSystem2 = new ParticleSystem(this);
+			//particleSystem2 = new ParticleSystem(this);
 			if(velocity.x > 0){
+				bullDirection = "RIGHT";
 				particleSystem.playMode("BULL_DUST_RIGHT");
 			}else{
+				bullDirection = "LEFT";
 				particleSystem.playMode("BULL_DUST_LEFT");
 			}
-			
+			Main.getStage().setScreenShake(true,"BULL_CHARGE");
 		}
 		
 		public function setOnFire():void{
-			particleSystem2.playMode("BULL_FIRE");
+			if(velocity.x > 0){
+				particleSystem.playMode("BULL_DUST_RIGHT_FIRE");
+			}else{
+				particleSystem.playMode("BULL_DUST_LEFT_FIRE");
+			}
 		}
 		
+		private function checkForExitScreen():void{
+			if(this.x > 900 || this.x < -100) {
+				Main.getStage().setScreenShake(false,"NONE");
+				timeExisted = 9999;
+			}
+		}
+	
 		private function checkForImpact():void{
 			if(this.hitbox.hitTestObject(myFollower)){
 				setOnFire();
 				//setIsActive(false);
 				//this.particleSystem.playMode("NONE");
 				myFollower.startToss(5,"bull");
+				Main.getStage().setScreenShake(true,"BULL_IMPACT");
 				//myFollower.setBehaviorState("SQUISHED");
 				//Main.getFollowerManager().tossAllFollowers(this);
 				//disabledMouseInteraction();
@@ -121,7 +147,7 @@
 				//trace("doSpecialInactiveStuff");
 				//markForDeletion();
 				
-				particleSystem2.abortAll();
+				//particleSystem2.abortAll();
 				particleSystem.abortAll();
 			}
 		}

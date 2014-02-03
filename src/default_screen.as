@@ -184,6 +184,7 @@
 		}
 		*/
 		public function addScreenToUIContainer():void{
+			//trace(this);
 			//trace(Main);
 			//trace(Main.theStage);
 			Main.theStage.addChild(this);
