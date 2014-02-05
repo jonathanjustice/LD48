@@ -7,9 +7,10 @@
 			import flash.ui.Mouse;
 	public class Main extends MovieClip{
 		public static var dialogs:Dialogs;
-		public static var theStage:TheStage = new TheStage;
+		public static var theStage:TheStage;
 		public static var followerManager:FollowerManager;
-		public static var actionManager;ActionManager;
+		public static var actionManager:ActionManager;
+		public static var screenFlash_FULL:screenFlash_Full;
 		public static var actionIndicator_mouse:ActionIndicator_mouse;
 		public static var uiContainter:Object;
 		private var actionMenu:ActionMenu;
@@ -35,16 +36,17 @@
         }
 		
 		private function setUp():void{
-			
-			
+			screenFlash_FULL = new screenFlash_Full();
+			theStage = new TheStage(screenFlash_FULL);
+			leader_Title = new Leader_Title();
 			uiContainter = stage;
-			theStage.addChild(bg_art);
-			stage.addChild(theStage);
+			theStage.addChildAt(bg_art,0);
+			stage.addChildAt(theStage,1);
 			theStage.hitbox.visible=false;
+			stage.addChildAt(leader_Title,2);
+			stage.addChild(screenFlash_FULL);
 			Mouse.hide();
 			addKeyboardInput();
-			leader_Title = new Leader_Title();
-			stage.addChild(leader_Title);
 			dialogs = new Dialogs();
 			actionMenu = new ActionMenu();
 			actionIndicator_mouse = new ActionIndicator_mouse();
@@ -122,6 +124,9 @@
 			follower.setMouseCoordinates(theStage.mouseX,theStage.mouseY);
 		}
 		
+		public static function getScreenFlash():screenFlash_Full{
+			return screenFlash_FULL;
+		}
 		
 		public static function getStage():Object{
 			return theStage;

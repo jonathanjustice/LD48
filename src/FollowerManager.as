@@ -7,7 +7,7 @@
 		private var speechBubbles:Array = new Array();
 		private var meteors:Array = new Array();
 		private var bulls:Array = new Array();
-		private var maxFollowers:int=25;
+		private var maxFollowers:int=50;
 		private var startToss:Boolean=false;
 		private var startBounce:Boolean=false;
 		public function FollowerManager(){

@@ -50,6 +50,8 @@
 			Main.theStage.addChildAt(this,0);
 			*/
 			defineSpecialCaseStats();
+			this.mouseEnabled=false;
+			this.mouseChildren=false;
 		}
 		
 		public function addSomeRandom():Number{

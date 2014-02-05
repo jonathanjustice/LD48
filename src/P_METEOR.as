@@ -110,13 +110,8 @@
 		}
 		
 		public override function doSpecialInactiveStuff():void{
-			
-			//trace("timeExisted",timeExisted);
 			timeExisted++;
 			if(timeExisted > lifeTime){
-				//trace("doSpecialInactiveStuff");
-				//markForDeletion();
-				
 				particleSystem.abortAll();
 			}
 		}

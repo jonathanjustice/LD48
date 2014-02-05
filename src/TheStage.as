@@ -15,16 +15,38 @@
 		private var shakeMode:String="NONE";
 		private var previousShakeMode:String="NONE";
 		private var shakeRandomNess:Point = new Point();
+		private var screenFlash;
 		
 		
-		public function TheStage(){
+		public function TheStage(newScreenFlash){
+			screenFlash = newScreenFlash;
 			trace("TheStage",this);
 			//trace(Main.theStage.width);
 			setUp();
 			arrangeScreen();
+			resetScreenFlash();
 			setMultiplier(screenLerpX,screenLerpY);
 			resetShakeRandomNess();
 			resetShake();
+		}
+		
+		public function resetScreenFlash():void{
+			Main.getScreenFlash().visible=false;
+		}
+		
+		public function setScreenFlash(newAlpha:Number):void{
+			Main.getScreenFlash().alpha = newAlpha;
+				Main.getScreenFlash().visible = true;
+		}
+		
+		public function updateScreenFlash():void{
+			//trace("screenFlash",screenFlash );
+			if(screenFlash.alpha > 0){
+				screenFlash.alpha -= .05;
+			}else{
+				screenFlash.visible = false;
+				screenFlash.alpha = 0;
+			}
 		}
 		
 		private function arrangeScreen():void{
@@ -38,6 +60,7 @@
 			//desiredY = 0;
 			screenShake();
 			lerpToPosition();
+			updateScreenFlash();
 		}
 		
 		private function resetShakeRandomNess():void{
@@ -84,9 +107,10 @@
 					this.y+=25;
 					shakeRandomNess.x=20;
 					shakeRandomNess.y=10;
+					setScreenFlash(1);
 					break;
 				case "COIN":
-				trace("SQUISH");
+					//trace("SQUISH");
 					shakeTimer=0;
 					maxShakeTime = 10;
 					this.y-=10;

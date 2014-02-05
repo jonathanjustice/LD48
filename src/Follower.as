@@ -118,10 +118,6 @@
 			setBehaviorState("WALK");
 			this.x = Math.round(Math.random()* 780);
 			this.y = 450;
-			this.eyes.burnMask.alpha=0;
-			this.eyes.burnMask.mouseEnabled=false;
-			this.eyes.burnMask.mouseChildren=false;
-			selectNewLerpMultiplier(behaviorState);
 			pauseWalking();
 		}
 		
@@ -224,7 +220,7 @@
 			if(isDead==true || is_C_FIRE_COIN == true){
 				//trace("dead DON'T DO ANYTHING");
 			}else if(isDead == false){
-				do_stuff_to_active_followers_inside_the_click_radius_excluding_this("HOP");
+				do_stuff_to_active_followers_inside_the_click_radius_excluding_this_follower("HOP");
 				setToDead();
 				running=false;
 				walking=false;
@@ -256,12 +252,13 @@
 		}
 		
 		private function METEOR_handler():void{
-			if(isDead == false){
+			if(isDead == false && behaviorState != "EXPLODED" && behaviorState != "SQUISHED" && behaviorState != "NONE" && isSquished == false){
+				disableInput();
 				setToDead();
 				anim_meteorLook();
 				isSpeechAllowed=true;
 				triggerNewSpeechBubble();
-				do_stuff_to_active_followers_inside_the_click_radius_excluding_this("LOOK_UPWARDS");
+				do_stuff_to_active_followers_inside_the_click_radius_excluding_this_follower("LOOK_UPWARDS");
 				Main.getFollowerManager().createNewMeteor(this);
 			}
 		}
@@ -340,6 +337,11 @@
 		
 		private function WALK_handler():void{
 			if(isDead == false){
+				particleSystem.playMode("NONE");
+				this.eyes.burnMask.alpha=0;
+				this.eyes.burnMask.mouseEnabled=false;
+				this.eyes.burnMask.mouseChildren=false;
+				selectNewLerpMultiplier(behaviorState);
 				enableInput();
 				running=false;
 				minDistanceBetweenOldAndNewTargets = minDistanceBetweenOldAndNewTargets_walk;
@@ -412,7 +414,7 @@
 			}
 		}
 		
-		private function do_stuff_to_active_followers_inside_the_click_radius_excluding_this(newState:String):void{
+		private function do_stuff_to_active_followers_inside_the_click_radius_excluding_this_follower(newState:String):void{
 			var followers:Array = Main.getFollowerManager().checkForClickRadius();
 			for each( var follower:Follower in followers){
 				if(follower != this){
@@ -421,6 +423,7 @@
 						follower.behaviorState != "C_FIRE_COIN" && 
 						follower.behaviorState != "EXPLODED" && 
 						follower.behaviorState != "NONE" && 
+						follower.behaviorState != "FALL" && 
 						follower.behaviorState != "CRISPY"){
 						follower.setBehaviorState(newState);
 					}
@@ -594,7 +597,9 @@
 			if(behaviorState == "LOVE_CRISPY"){
 				//walk();
 			}
-			
+			if(behaviorState == "EXPLODED"){
+				//walk();
+			}
 			if(behaviorState == "LOVE_FIRE"){
 				walk();
 			}
@@ -698,13 +703,18 @@
 			
 		}
 		
+		
+		
 		//if the guy isn't dead, then allow him to be thrown
 		public function startToss(tossValue:Number,tossMode:String="none"):void{
 			var preBullAlpha:Number=this.eyes.burnMask.alpha;
 			if(behaviorState != "SQUISHED" 
 			   && behaviorState != "COIN" 
 			   && behaviorState != "EXPLODED" 
+			   && behaviorState != "CRISPY" 
+			   && behaviorState != "C_FIRE_COIN" 
 			   && behaviorState != "FALL" 
+			   && isDead != true
 			   && behaviorState != "NONE"
 			   && isBeingTossed == false){
 				this.y-=2;
@@ -744,8 +754,6 @@
 				velocity.y = maxYVelocity;
 			}
 			if(this.y < groundPlane){
-				//this.alpha=.5;
-				
 				if(this.x > screenBounds){
 					velocity.x*=-1;
 				}
@@ -758,7 +766,6 @@
 				this.y = groundPlane;
 				resetGravity();
 				isBeingTossed=false;
-				//this.alpha=1;
 				if(velocity.y >= 30){
 					setBehaviorState("SQUISHED");
 					setToDead();
@@ -810,10 +817,14 @@
 			particleSystem.playMode(behaviorState);
 			if(this.currentLabel != "squished_end"){
 				particleSystem.playMode("SQUISHED");
+				//trace("squished_end NOT reached");
+				this.play();
 			}
 			if(this.currentLabel == "squished_end"){
-				particleSystem.playMode(behaviorState);
-				setBehaviorState("NONE");
+				//trace("squished_end reached");
+				particleSystem.playMode("NONE");
+				//setBehaviorState("NONE");
+				enableInput();
 			}
 		}
 		
