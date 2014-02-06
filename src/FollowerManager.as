@@ -11,6 +11,7 @@
 		private var maxFollowers:int=50;
 		private var startToss:Boolean=false;
 		private var startBounce:Boolean=false;
+		private var ID_generator:int=0;
 		public function FollowerManager(){
 			//setUp();
 		}
@@ -164,10 +165,10 @@
 				follower.setGroundPlane(follower.y);
 				follower.scaleY = 1 + (i*.05);
 				follower.scaleX = 1 + (i*.05);
+				follower.assignID(ID_generator);
 				Main.theStage.addChild(follower);
+				ID_generator += 1;
 			}
 		}
-		
-		
 	}
 }

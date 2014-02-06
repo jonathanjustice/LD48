@@ -107,7 +107,7 @@
 				Main.getFollowerManager().tossAllFollowers(this);
 				disabledMouseInteraction();
 				Main.getStage().setScreenShake(true,"METEOR_IMPACT");
-				Main.getStage().dispatchEvent(new SoundEvent("SOUND_START","METEOR_IMPACT"));
+				Main.getStage().dispatchEvent(new SoundEvent("SOUND_START","METEOR_IMPACT",-1));
 			}
 		}
 		
@@ -141,7 +141,5 @@
 			var randomValue:Number= 2.5-(Math.random()*5);
 			return randomValue;
 		}
-		
-		
 	}
 }

@@ -26,13 +26,17 @@
 		private var METEOR_IMPACT:explosion_002 = new explosion_002();
 		private var METEOR_FALL:meteorFall_001 = new meteorFall_001();
 		private var FOLLOWER_SQUISH:squish_002 = new squish_002();
+		//private var FOLLOWER_FIRE:fire_001 = new fire_001();
+		private var FOLLOWER_FIRE:fire_002 = new fire_002();
+		private var FOLLOWER_FIRE_NOISE:fire_002_accompanyment = new fire_002_accompanyment();
 		
 		public var theStage;
+		private var numerbOfPlays:int=1;
 		//sdfsdfsdf
 		
 		
 		
-		
+		fire_002_accompanyment
 		//file paths for sound
 		//EVENT FORMAT FOR CALLING SONG EVENT:
 		//Main.theStage.dispatchEvent(new SoundEvent("SOUND_START","SOUNDNAME"));
@@ -66,29 +70,42 @@
 	
 		public function startSound(event:SoundEvent):void {
 			var myResult:String = event.result;
+			var dispatcherID:int = event.dispatcherID;
 			//trace(myResult);
 			switch(event.result) {
 				case "START_SCREEN_SONG":
 					filePath = START_SCREEN_SONG;
+					numerbOfPlays = 1;
 					break;
 				case "METEOR_FALL":
 					filePath = METEOR_FALL;
+					numerbOfPlays = 1;
 					break;
 				case "METEOR_IMPACT":
 					filePath = METEOR_IMPACT;
+					numerbOfPlays = 1;
 					break;
 				case "FOLLOWER_SQUISH":
 					filePath = FOLLOWER_SQUISH;
+					numerbOfPlays = 1;
+					break;
+				case "FOLLOWER_FIRE":
+					filePath = FOLLOWER_FIRE;
+					numerbOfPlays = 999;
+					break;
+				case "FOLLOWER_FIRE_NOISE":
+					filePath = FOLLOWER_FIRE_NOISE;
+					numerbOfPlays = 999;
 					break;
 				
 				
-				
+				FOLLOWER_FIRE_NOISE
 			}
-			createNewSoundObject(filePath,myResult);
+			createNewSoundObject(filePath,myResult,dispatcherID);
 		}
 		
-		public function createNewSoundObject(file_path,soundID):void {
-			var newSoundObject:SoundObject = new SoundObject(filePath,soundID);
+		public function createNewSoundObject(file_path,soundID,dispatcherID):void {
+			var newSoundObject:SoundObject = new SoundObject(filePath,soundID,dispatcherID,numerbOfPlays);
 			soundObjects.push(newSoundObject);
 		}
 		

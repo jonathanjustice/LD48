@@ -59,9 +59,18 @@
 		private var rocketVelocity:Point=new Point(0,-.5);
 		private var rocketSpeed:int=5;
 		private var isBeingTossed:Boolean=false;
+		private var followerID:int=0;
 		public function Follower(){
 			setUp();
 			initialSetup();
+		}
+		
+		public function assignID(newID):void{
+			followerID = newID;
+		}
+		
+		public function getID():int{
+			return followerID;
 		}
 		
 		public function abortInput():void{
@@ -178,7 +187,9 @@
 			setToDead();
 			anim_squished();
 			isSquished = true;
-			Main.getStage().dispatchEvent(new SoundEvent("SOUND_START","FOLLOWER_SQUISH"));
+			Main.getStage().dispatchEvent(new SoundEvent("SOUND_START","FOLLOWER_SQUISH",followerID));
+			Main.getStage().dispatchEvent(new SoundEvent("SOUND_FADE_OUT_DISPATCHER_ONLY","FOLLOWER_FIRE",followerID));
+			//Main.getStage().dispatchEvent(new SoundEvent("SOUND_FADE_OUT_DISPATCHER_ONLY","FOLLOWER_FIRE_NOISE",followerID));
 		}
 		
 		private function FIRE_handler():void{
@@ -202,6 +213,8 @@
 				isOnFire=true;
 				selectNewWalkTarget();
 				enableInput();
+				Main.getStage().dispatchEvent(new SoundEvent("SOUND_START","FOLLOWER_FIRE",followerID));
+				//Main.getStage().dispatchEvent(new SoundEvent("SOUND_START","FOLLOWER_FIRE_NOISE",followerID));
 			}else if(isSquished == true){
 			}else{
 				trace("else");
@@ -209,6 +222,9 @@
 		}
 		
 		private function CRISPY_handler():void{
+			
+			Main.getStage().dispatchEvent(new SoundEvent("SOUND_FADE_OUT_DISPATCHER_ONLY","FOLLOWER_FIRE",followerID));
+			//Main.getStage().dispatchEvent(new SoundEvent("SOUND_FADE_OUT_DISPATCHER_ONLY","FOLLOWER_FIRE_NOISE",followerID));
 			setToDead();
 			running=false;
 			walking=false;

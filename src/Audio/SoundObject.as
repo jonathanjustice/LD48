@@ -20,13 +20,19 @@
 		private var soundVolume:Number = .25;
 		private var soundFadeSpeed:Number = .025;
 		private var isSoundActive:Boolean = false;
+		private var followerID:int = 999;
+		private var timesPlayed:int=0;
 		
-		public function SoundObject(soundFileLocation,newID:String):void {
-			
+		private var numberOfPlays:int = 1;
+		
+		public function SoundObject(soundFileLocation,newID:String,newFollowerID:int=999,numTimesToPlay:int=1):void {
+			numberOfPlays = numTimesToPlay;
+			followerID = newFollowerID;
 			soundID = newID;
 			//trace("soundID   :::   ",soundID);
 			createSound(soundFileLocation);
 			//requestSounds();
+			//trace("newID",newID,"numTimesToPlay",numTimesToPlay);
 		}
 		
 		public function getIsSoundActive():Boolean {
@@ -42,6 +48,23 @@
 			if (isSoundActive == true) {
 				if (myResult == soundID || myResult == "ALL") {
 					addEventListener(Event.ENTER_FRAME, fadeSoundOunt);	
+				}
+			}
+		}
+		
+		public function endSoundWithFadeOut_ForEventDispatcherOnly(event:SoundEvent):void {
+			//trace("endSoundWithFadeOut_ForEventDispatcherOnly");
+			var myResult:String = event.result;
+			var dispatcherID:int = event.dispatcherID;
+			//trace(myResult);
+			//trace("soundID   -----   ",soundID);
+			//trace("***********SOUND FADE OUT");
+			//trace("***********isSoundActive",isSoundActive);
+			if (isSoundActive == true) {
+				if(followerID == dispatcherID){
+					if (myResult == soundID || myResult == "ALL") {
+						addEventListener(Event.ENTER_FRAME, fadeSoundOunt);	
+					}
 				}
 			}
 		}
@@ -91,21 +114,22 @@
 			channel = new SoundChannel();
 			//trace("channel",channel);
 			sound = newSound;
-			playSound(1, .25);
+			playSound(.25);
 			Main.theStage.addEventListener(SoundEvent.SOUND_STOP, endSoundWithoutFadeOut);
 			Main.theStage.addEventListener(SoundEvent.SOUND_FADE_OUT, endSoundWithFadeOut);
+			Main.theStage.addEventListener(SoundEvent.SOUND_FADE_OUT_DISPATCHER_ONLY, endSoundWithFadeOut_ForEventDispatcherOnly);
 			isSoundActive = true;
 			//trace("new SOUND CHANNEL 1");
 		}
 		
 		
-		public function playSound(number_of_times_to_play:int,newVolume:Number):void{
+		public function playSound(newVolume:Number):void{
 			soundVolume = newVolume;
-			number_of_times_to_play=1;
-			var volume_sound_transform:SoundTransform = new SoundTransform(soundVolume,0);
+			var volume_sound_transform:SoundTransform = new SoundTransform(soundVolume,numberOfPlays);
             channel.soundTransform = volume_sound_transform;
 			channel = sound.play();
-			channel.addEventListener(Event.SOUND_COMPLETE, sound_completed);
+			//channel.addEventListener(Event.SOUND_COMPLETE, sound_completed);
+    		channel.addEventListener(Event.SOUND_COMPLETE, sound_completed);
 			
 		}
 
@@ -117,17 +141,23 @@
 			}
 		}
 		
-		private function sound_completed($evt:Event):void{
+		function sound_completed(e:Event):void{
+			timesPlayed++;
 			//trace("sound completed");
-			stopSound();
-			//do some logic here
-			channel.removeEventListener(Event.SOUND_COMPLETE, sound_completed);
-			resetSound();
+			if(timesPlayed >= numberOfPlays){
+				stopSound();
+				channel.removeEventListener(Event.SOUND_COMPLETE, sound_completed);
+				resetSound();
+			}else{
+				channel = sound.play();
+				channel.addEventListener(Event.SOUND_COMPLETE, sound_completed);
+			}
 		}
 		
 		private function resetSound():void {
 			removeEventListener(SoundEvent.SOUND_STOP, endSoundWithoutFadeOut);
 			removeEventListener(SoundEvent.SOUND_FADE_OUT, endSoundWithFadeOut);
+			removeEventListener(SoundEvent.SOUND_FADE_OUT, endSoundWithFadeOut_ForEventDispatcherOnly);
 			
 			//I guess shit was somehow being set to null twice then? 
 			//whatever, remove this stuff then
