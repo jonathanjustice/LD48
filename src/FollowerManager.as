@@ -1,6 +1,7 @@
 ﻿package{
 	import flash.display.MovieClip;
 	import flash.events.*;
+	import customEvents.SoundEvent;
 	public class FollowerManager extends MovieClip{
 		private var followers:Array = new Array();
 		private var leaderStatues:Array = new Array();
@@ -108,6 +109,7 @@
 		}
 		
 		public function createNewMeteor(follower:MovieClip):void{
+			Main.getStage().dispatchEvent(new SoundEvent("SOUND_START","METEOR_FALL"));
 			var index:int = followers.indexOf(follower);
 			var meteor = new P_METEOR();
 			meteor.setFollower(follower);

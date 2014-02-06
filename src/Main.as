@@ -4,7 +4,9 @@
 	import flash.geom.*;
 	import flash.events.MouseEvent;
 	import flash.display.*;
-			import flash.ui.Mouse;
+	import flash.ui.Mouse;
+	import Audio.SoundManager;
+	import Audio.SoundObject;
 	public class Main extends MovieClip{
 		public static var dialogs:Dialogs;
 		public static var theStage:TheStage;
@@ -18,6 +20,7 @@
 		private var stageNode:StageNode;
 		public static var originalStageX:int=800;
 		private var bg_art:BG_art = new BG_art;
+		private var soundManager:SoundManager;
 		public function Main() {
 			if (stage) init();
             else addEventListener(Event.ADDED_TO_STAGE, init);
@@ -34,10 +37,11 @@
 			//stage.displayState = StageDisplayState.FULL_SCREEN;
 			setUp();
         }
-		
+		//Main.theStage.dispatchEvent(new SoundEvent("SOUND_START","ENEMY_PICKED_UP"));
 		private function setUp():void{
 			screenFlash_FULL = new screenFlash_Full();
 			theStage = new TheStage(screenFlash_FULL);
+			soundManager = new SoundManager(theStage);
 			leader_Title = new Leader_Title();
 			uiContainter = stage;
 			theStage.addChildAt(bg_art,0);

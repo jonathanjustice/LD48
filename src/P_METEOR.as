@@ -1,6 +1,7 @@
 ﻿package{
 	import flash.display.MovieClip
 	import flash.geom.Point;
+	import customEvents.SoundEvent;
 	public class P_METEOR extends Particle{
 		private var scaleMultiplier:Number=1.08;
 		private var desiredX:Number=0;
@@ -106,6 +107,7 @@
 				Main.getFollowerManager().tossAllFollowers(this);
 				disabledMouseInteraction();
 				Main.getStage().setScreenShake(true,"METEOR_IMPACT");
+				Main.getStage().dispatchEvent(new SoundEvent("SOUND_START","METEOR_IMPACT"));
 			}
 		}
 		

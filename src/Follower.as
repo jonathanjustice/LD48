@@ -3,6 +3,7 @@
 	import flash.events.*;
 	import flash.display.MovieClip;
 	import flash.geom.Point;
+	import customEvents.SoundEvent;
 	public class Follower extends default_screen{
 		private var walkTarget:int=0;
 		private var maxFireTime:int=300;
@@ -177,6 +178,7 @@
 			setToDead();
 			anim_squished();
 			isSquished = true;
+			Main.getStage().dispatchEvent(new SoundEvent("SOUND_START","FOLLOWER_SQUISH"));
 		}
 		
 		private function FIRE_handler():void{
