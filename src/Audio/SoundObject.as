@@ -149,6 +149,9 @@
 				channel.removeEventListener(Event.SOUND_COMPLETE, sound_completed);
 				resetSound();
 			}else{
+				channel.removeEventListener(Event.SOUND_COMPLETE, sound_completed);
+				trace("sound",sound);
+				trace("channel",channel);
 				channel = sound.play();
 				channel.addEventListener(Event.SOUND_COMPLETE, sound_completed);
 			}
