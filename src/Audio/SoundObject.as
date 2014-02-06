@@ -126,8 +126,15 @@
 		public function playSound(newVolume:Number):void{
 			soundVolume = newVolume;
 			var volume_sound_transform:SoundTransform = new SoundTransform(soundVolume,numberOfPlays);
-            channel.soundTransform = volume_sound_transform;
-			channel = sound.play();
+				
+			
+			if(channel != null){
+				channel.soundTransform = volume_sound_transform;
+				channel = sound.play();
+			}else{
+				trace("sketti");
+			}
+           
 			//channel.addEventListener(Event.SOUND_COMPLETE, sound_completed);
     		channel.addEventListener(Event.SOUND_COMPLETE, sound_completed);
 			
@@ -150,8 +157,8 @@
 				resetSound();
 			}else{
 				channel.removeEventListener(Event.SOUND_COMPLETE, sound_completed);
-				trace("sound",sound);
-				trace("channel",channel);
+				//trace("sound",sound);
+				//trace("channel",channel);
 				channel = sound.play();
 				channel.addEventListener(Event.SOUND_COMPLETE, sound_completed);
 			}
