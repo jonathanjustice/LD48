@@ -130,7 +130,7 @@
 			
 			if(channel != null){
 				channel.soundTransform = volume_sound_transform;
-				//channel = sound.play();
+				channel = sound.play();
 			}else{
 				trace("sketti");
 			}
