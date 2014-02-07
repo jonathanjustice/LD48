@@ -17,7 +17,7 @@
 		private var channel:SoundChannel;
 		private var sound;
 		//private var soundLoader:mp3Loader = new mp3Loader();
-		private var soundVolume:Number = .25;
+		private var soundVolume:Number = .0;
 		private var soundFadeSpeed:Number = .025;
 		private var isSoundActive:Boolean = false;
 		private var followerID:int = 999;
@@ -114,7 +114,7 @@
 			channel = new SoundChannel();
 			//trace("channel",channel);
 			sound = newSound;
-			playSound(.25);
+			playSound(.0);
 			Main.theStage.addEventListener(SoundEvent.SOUND_STOP, endSoundWithoutFadeOut);
 			Main.theStage.addEventListener(SoundEvent.SOUND_FADE_OUT, endSoundWithFadeOut);
 			Main.theStage.addEventListener(SoundEvent.SOUND_FADE_OUT_DISPATCHER_ONLY, endSoundWithFadeOut_ForEventDispatcherOnly);
@@ -130,7 +130,7 @@
 			
 			if(channel != null){
 				channel.soundTransform = volume_sound_transform;
-				channel = sound.play();
+				//channel = sound.play();
 			}else{
 				trace("sketti");
 			}

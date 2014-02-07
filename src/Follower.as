@@ -58,11 +58,20 @@
 		private var targetRotation:Number=0;
 		private var rocketVelocity:Point=new Point(0,-.5);
 		private var rocketSpeed:int=5;
+		private var isTouchingBull:Boolean=false;
 		private var isBeingTossed:Boolean=false;
 		private var followerID:int=0;
 		public function Follower(){
 			setUp();
 			initialSetup();
+		}
+		
+		public function setBullCollision(newState:Boolean):void{
+			isTouchingBull = newState;
+		}
+		
+		public function getBullCollision():Boolean{
+			return isTouchingBull;
 		}
 		
 		public function assignID(newID):void{
@@ -244,6 +253,7 @@
 				walking=false;
 				if(isOnFire && is_C_FIRE_COIN==false){
 					setBehaviorState("C_FIRE_COIN");
+					Main.getStage().dispatchEvent(new SoundEvent("SOUND_START","FOLLOWER_ROCKET_COIN",followerID));
 				}else {
 					Main.getFollowerManager().abortCurrentBubble(this);
 					isSpeechAllowed=true;
@@ -287,6 +297,7 @@
 				isSpeechAllowed=true;
 				triggerNewSpeechBubble();
 				Main.getFollowerManager().createNewBull(this);
+				Main.getStage().dispatchEvent(new SoundEvent("SOUND_START","BULL_STAMPEDE",followerID));
 				if(isOnFire == true){
 					var preBullAlpha:Number=this.eyes.burnMask.alpha;
 					setBehaviorState("FIRE");
@@ -312,6 +323,8 @@
 				}
 			}else if(isDead == false){
 				 if(!isCrispy && isOnFire){//if on fire and not crispy yet
+				 
+					Main.getStage().dispatchEvent(new SoundEvent("SOUND_FADE_OUT_DISPATCHER_ONLY","FOLLOWER_FIRE",followerID));
 					this.eyes.gotoAndPlay("center");
 					walking=true;
 					isOnFire=false;
@@ -441,6 +454,7 @@
 						follower.behaviorState != "C_FIRE_COIN" && 
 						follower.behaviorState != "EXPLODED" && 
 						follower.behaviorState != "NONE" && 
+						follower.behaviorState != "FIRE" && 
 						follower.behaviorState != "FALL" && 
 						follower.behaviorState != "CRISPY"){
 						follower.setBehaviorState(newState);
@@ -827,6 +841,8 @@
 			if(this.currentLabel == "coinEnd"){
 				Main.getStage().setScreenShake(true,"COIN");
 				setBehaviorState("EXPLODED");
+				Main.getStage().dispatchEvent(new SoundEvent("SOUND_START","FOLLOWER_COIN",followerID));
+				//Main.getStage().dispatchEvent(new SoundEvent("SOUND_START","FOLLOWER_SQUISH",followerID));
 			}
 		}
 		

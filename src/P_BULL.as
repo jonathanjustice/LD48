@@ -4,6 +4,7 @@
     import flash.filters.BitmapFilter;
     import flash.filters.BitmapFilterQuality;
     import flash.filters.GlowFilter;
+	import customEvents.SoundEvent;
 	public class P_BULL extends Particle{
 		private var scaleMultiplier:Number=1.08;
 		private var desiredX:Number=0;
@@ -16,6 +17,7 @@
 		private var previousPosition:Point=new Point();
 		private var myFollower:MovieClip=new MovieClip();
 		private var bullDirection:String="";
+		private var followerID:int=0;
 		public function P_BULL(){
 			/*meteor_dirt.visible=false;
 			meteor_top.visible=true;
@@ -24,6 +26,10 @@
 			//                                         (color,alpha,blurX,blurY,strength,quality,innerglow,knockout)
 			var glowFilter:GlowFilter = new GlowFilter(0x000000, 1.0, 5.0, 5.0, 40,1,false,false);
 			this.filters = [glowFilter];
+		}
+		
+		public function assignID(newID):void{
+			followerID = newID;
 		}
 		
 		private function disabledMouseInteraction():void{
@@ -119,7 +125,12 @@
 		}
 		
 		private function checkForExitScreen():void{
-			if(this.x > 900 || this.x < -100) {
+			//1300
+			//-500
+			if(this.x > 1300 || this.x < -500) {
+				particleSystem.abortAll();
+				Main.getStage().dispatchEvent(new SoundEvent("SOUND_FADE_OUT_DISPATCHER_ONLY","BULL_STAMPEDE",followerID));
+				//particleSystem.playMode("NONE");
 				Main.getStage().setScreenShake(false,"NONE");
 				timeExisted = 9999;
 			}
@@ -127,15 +138,23 @@
 	
 		private function checkForImpact():void{
 			if(this.hitbox.hitTestObject(myFollower)){
-				setOnFire();
-				//setIsActive(false);
-				//this.particleSystem.playMode("NONE");
-				myFollower.startToss(5,"bull");
-				Main.getStage().setScreenShake(true,"BULL_IMPACT");
-				//myFollower.setBehaviorState("SQUISHED");
-				//Main.getFollowerManager().tossAllFollowers(this);
-				//disabledMouseInteraction();
-				//trace("bull");
+				
+				if(myFollower.getBullCollision()==false){
+					Main.getStage().dispatchEvent(new SoundEvent("SOUND_START","BULL_BUMP",followerID));
+					setOnFire();
+					//setIsActive(false);
+					//this.particleSystem.playMode("NONE");
+					myFollower.startToss(5,"bull");
+					Main.getStage().setScreenShake(true,"BULL_IMPACT");
+					//myFollower.setBehaviorState("SQUISHED");
+					//Main.getFollowerManager().tossAllFollowers(this);
+					//disabledMouseInteraction();
+					//trace("bull");
+				}
+				
+				myFollower.setBullCollision(true);
+			}else{
+				myFollower.setBullCollision(false);
 			}
 		}
 		
@@ -144,11 +163,11 @@
 			//trace("timeExisted",timeExisted);
 			timeExisted++;
 			if(timeExisted > lifeTime){
-				//trace("doSpecialInactiveStuff");
+				trace("doSpecialInactiveStuff");
 				//markForDeletion();
 				
 				//particleSystem2.abortAll();
-				particleSystem.abortAll();
+				//particleSystem.abortAll();
 			}
 		}
 		

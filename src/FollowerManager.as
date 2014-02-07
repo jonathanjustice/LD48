@@ -12,6 +12,7 @@
 		private var startToss:Boolean=false;
 		private var startBounce:Boolean=false;
 		private var ID_generator:int=0;
+		private var bullID:int=-1;
 		public function FollowerManager(){
 			//setUp();
 		}
@@ -127,6 +128,7 @@
 			var index:int = followers.indexOf(follower);
 			var bull = new P_BULL();
 			bull.setFollower(follower);
+			bull.assignID(follower.getID())
 			bull.defineSpawnPoint(follower.getLocation(),follower.getVelocity(),follower.getScale());
 			bulls.push(bull);
 			
