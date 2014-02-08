@@ -141,15 +141,10 @@
 				
 				if(myFollower.getBullCollision()==false){
 					Main.getStage().dispatchEvent(new SoundEvent("SOUND_START","BULL_BUMP",followerID));
-					setOnFire();
-					//setIsActive(false);
-					//this.particleSystem.playMode("NONE");
+					if(myFollower.getBehaviorState() == "FIRE"){
+						setOnFire();
+					}
 					myFollower.startToss(5,"bull");
-					Main.getStage().setScreenShake(true,"BULL_IMPACT");
-					//myFollower.setBehaviorState("SQUISHED");
-					//Main.getFollowerManager().tossAllFollowers(this);
-					//disabledMouseInteraction();
-					//trace("bull");
 				}
 				
 				myFollower.setBullCollision(true);

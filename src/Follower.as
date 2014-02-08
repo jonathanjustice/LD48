@@ -202,32 +202,24 @@
 		}
 		
 		private function FIRE_handler():void{
-			if(isCrispy == true){
-				behaviorState = "CRISPY";
-				this.eyes.burnMask.alpha=1;
-			}else if (isDead == false) {
-				randomlyFlipRightOrLeft();
-				this.eyes.burnMask.alpha=0;
-				anim_fire();
-				fireTime=0;
-				Main.getFollowerManager().abortCurrentBubble(this);
-				isSpeechAllowed=true;
-				triggerNewSpeechBubble();
-				minDistanceBetweenOldAndNewTargets = minDistanceBetweenOldAndNewTargets_fire;
-				maxDistanceBetweenOldAndNewTargets = maxDistanceBetweenOldAndNewTargets_fire;
-				particleSystem.playMode(behaviorState);
-				pauseTime=3;
-				running=true;
-				walking=false;
-				isOnFire=true;
-				selectNewWalkTarget();
-				enableInput();
-				Main.getStage().dispatchEvent(new SoundEvent("SOUND_START","FOLLOWER_FIRE",followerID));
-				//Main.getStage().dispatchEvent(new SoundEvent("SOUND_START","FOLLOWER_FIRE_NOISE",followerID));
-			}else if(isSquished == true){
-			}else{
-				trace("else");
-			}
+			randomlyFlipRightOrLeft();
+			this.eyes.burnMask.alpha=0;
+			anim_fire();
+			fireTime=0;
+			Main.getFollowerManager().abortCurrentBubble(this);
+			isSpeechAllowed=true;
+			triggerNewSpeechBubble();
+			minDistanceBetweenOldAndNewTargets = minDistanceBetweenOldAndNewTargets_fire;
+			maxDistanceBetweenOldAndNewTargets = maxDistanceBetweenOldAndNewTargets_fire;
+			particleSystem.playMode(behaviorState);
+			pauseTime=3;
+			running=true;
+			walking=false;
+			isOnFire=true;
+			selectNewWalkTarget();
+			enableInput();
+			Main.getStage().dispatchEvent(new SoundEvent("SOUND_START","FOLLOWER_FIRE",followerID));
+			//Main.getStage().dispatchEvent(new SoundEvent("SOUND_START","FOLLOWER_FIRE_NOISE",followerID));
 		}
 		
 		private function CRISPY_handler():void{
@@ -244,23 +236,19 @@
 		}
 		
 		private function COIN_handler():void{
-			if(isDead==true || is_C_FIRE_COIN == true){
-				//trace("dead DON'T DO ANYTHING");
-			}else if(isDead == false){
-				do_stuff_to_active_followers_inside_the_click_radius_excluding_this_follower("HOP");
-				setToDead();
-				running=false;
-				walking=false;
-				if(isOnFire && is_C_FIRE_COIN==false){
-					setBehaviorState("C_FIRE_COIN");
-					Main.getStage().dispatchEvent(new SoundEvent("SOUND_START","FOLLOWER_ROCKET_COIN",followerID));
-				}else {
-					Main.getFollowerManager().abortCurrentBubble(this);
-					isSpeechAllowed=true;
-					triggerNewSpeechBubble();
-					anim_coin();
-					isSquished = true;
-				}
+			do_stuff_to_active_followers_inside_the_click_radius_excluding_this_follower("HOP");
+			setToDead();
+			running=false;
+			walking=false;
+			if(isOnFire && is_C_FIRE_COIN==false){
+				setBehaviorState("C_FIRE_COIN");
+				Main.getStage().dispatchEvent(new SoundEvent("SOUND_START","FOLLOWER_ROCKET_COIN",followerID));
+			}else {
+				Main.getFollowerManager().abortCurrentBubble(this);
+				isSpeechAllowed=true;
+				triggerNewSpeechBubble();
+				anim_coin();
+				isSquished = true;
 			}
 		}
 		
@@ -280,66 +268,34 @@
 		}
 		
 		private function METEOR_handler():void{
-			if(isDead == false && behaviorState != "EXPLODED" && behaviorState != "SQUISHED" && behaviorState != "NONE" && isSquished == false){
-				disableInput();
-				setToDead();
-				anim_meteorLook();
-				isSpeechAllowed=true;
-				triggerNewSpeechBubble();
-				do_stuff_to_active_followers_inside_the_click_radius_excluding_this_follower("LOOK_UPWARDS");
-				Main.getFollowerManager().createNewMeteor(this);
-			}
+			disableInput();
+			setToDead();
+			anim_meteorLook();
+			isSpeechAllowed=true;
+			triggerNewSpeechBubble();
+			do_stuff_to_active_followers_inside_the_click_radius_excluding_this_follower("LOOK_UPWARDS");
+			Main.getFollowerManager().createNewMeteor(this);
 		}
 		
 		
 		private function BULL_handler():void{
-			if(isDead == false){
-				isSpeechAllowed=true;
-				triggerNewSpeechBubble();
-				Main.getFollowerManager().createNewBull(this);
-				Main.getStage().dispatchEvent(new SoundEvent("SOUND_START","BULL_STAMPEDE",followerID));
-				if(isOnFire == true){
-					var preBullAlpha:Number=this.eyes.burnMask.alpha;
-					setBehaviorState("FIRE");
-					this.eyes.burnMask.alpha=preBullAlpha;
-					running=true;
-				}else{
-					setBehaviorState("WALK");
-					walking=true;
-				}
+			isSpeechAllowed=true;
+			triggerNewSpeechBubble();
+			Main.getFollowerManager().createNewBull(this);
+			Main.getStage().dispatchEvent(new SoundEvent("SOUND_START","BULL_STAMPEDE",followerID));
+			if(isOnFire == true){
+				var preBullAlpha:Number=this.eyes.burnMask.alpha;
+				setBehaviorState("FIRE");
+				this.eyes.burnMask.alpha=preBullAlpha;
+				running=true;
+			}else{
+				setBehaviorState("WALK");
+				walking=true;
 			}
 		}
 		
 		private function HOP_handler():void{
 			anim_hop();
-		}
-		
-		private function LOVE_handler():void{
-			if(isDead==true){
-				if(isCrispy == true){//if crispy dead
-					setBehaviorState("LOVE_CRISPY");
-				}else if(isSquished){
-					setBehaviorState("SQUISHED_WALK");
-				}
-			}else if(isDead == false){
-				 if(!isCrispy && isOnFire){//if on fire and not crispy yet
-				 
-					Main.getStage().dispatchEvent(new SoundEvent("SOUND_FADE_OUT_DISPATCHER_ONLY","FOLLOWER_FIRE",followerID));
-					this.eyes.gotoAndPlay("center");
-					walking=true;
-					isOnFire=false;
-					this.eyes.burnMask.alpha=0;
-					this.eyes.burnMask.visible=false;
-					setBehaviorState("NONE");
-					setBehaviorState("WALK");
-				 }else{
-					//not dead
-					setBehaviorState("WALK");
-					triggerNewSpeechBubble();
-				 }
-			}
-			isSpeechAllowed=true;
-			triggerNewSpeechBubble();
 		}
 		
 		private function SQUISHED_WALK_handler():void{
@@ -351,14 +307,20 @@
 			maxDistanceBetweenOldAndNewTargets = maxDistanceBetweenOldAndNewTargets_walk;
 		}
 		
+		private function SQUISHED_WALK_LIFT_handler():void{
+			anim_squishedLifted();
+			addReleaseHandler();
+			Main.getFollowerManager().abortCurrentBubble(this);
+			isSpeechAllowed=true;
+			//triggerNewSpeechBubble();
+		}
+		
 		private function LIFT_handler():void{
-			if(isDead == false){
-				anim_lifted();
-				addReleaseHandler();
-				Main.getFollowerManager().abortCurrentBubble(this);
-				isSpeechAllowed=true;
-				triggerNewSpeechBubble();
-			}
+			anim_lifted();
+			addReleaseHandler();
+			Main.getFollowerManager().abortCurrentBubble(this);
+			isSpeechAllowed=true;
+			triggerNewSpeechBubble();
 		}
 		
 		private function FALL_handler():void{
@@ -367,18 +329,16 @@
 		}
 		
 		private function WALK_handler():void{
-			if(isDead == false){
-				particleSystem.playMode("NONE");
-				this.eyes.burnMask.alpha=0;
-				this.eyes.burnMask.mouseEnabled=false;
-				this.eyes.burnMask.mouseChildren=false;
-				selectNewLerpMultiplier(behaviorState);
-				enableInput();
-				running=false;
-				minDistanceBetweenOldAndNewTargets = minDistanceBetweenOldAndNewTargets_walk;
-				maxDistanceBetweenOldAndNewTargets = maxDistanceBetweenOldAndNewTargets_walk;
-				anim_walk();
-			}
+			particleSystem.playMode("NONE");
+			this.eyes.burnMask.alpha=0;
+			this.eyes.burnMask.mouseEnabled=false;
+			this.eyes.burnMask.mouseChildren=false;
+			selectNewLerpMultiplier(behaviorState);
+			enableInput();
+			running=false;
+			minDistanceBetweenOldAndNewTargets = minDistanceBetweenOldAndNewTargets_walk;
+			maxDistanceBetweenOldAndNewTargets = maxDistanceBetweenOldAndNewTargets_walk;
+			anim_walk();
 		}
 		
 		private function LOOK_UPWARDS_handler():void{
@@ -386,61 +346,128 @@
 				enableInput();
 		}
 		
+		private function LOVE_handler():void{
+			Main.getStage().dispatchEvent(new SoundEvent("SOUND_FADE_OUT_DISPATCHER_ONLY","FOLLOWER_FIRE",followerID));
+			this.eyes.gotoAndStop("center");
+			walking=true;
+			isOnFire=false;
+			this.eyes.burnMask.alpha=0;
+			this.eyes.burnMask.visible=false;
+			setBehaviorState("NONE");
+			setBehaviorState("WALK");
+			triggerNewSpeechBubble();
+			isSpeechAllowed=true;
+			triggerNewSpeechBubble();
+		}
 		
+		public function getBehaviorState():String{
+			return behaviorState;
+		}
 		
 		public function setBehaviorState(newState:String):void{
 			//trace("setBehaviorState",newState);
-			behaviorState = newState;
+			
 			switch (newState){
 				case "null":
 					break;
 				case "NONE":
+					behaviorState = newState;	
 					particleSystem.playMode(behaviorState);
 					break;
 				case "EXPLODED":
+					behaviorState = newState;	
 					EXPLODED_handler();
 					break;
 				case "SQUISHED":
+					behaviorState = newState;	
 					SQUISHED_handler();
 					break;
 				case "FIRE":
-					FIRE_handler();
+					if(isCrispy == true){
+						behaviorState = "CRISPY";
+						this.eyes.burnMask.alpha=1;
+					}else if (isDead == false) {
+						behaviorState = newState;	
+						FIRE_handler();
+					}
 					break;
 				case "CRISPY":
+					behaviorState = newState;	
 					CRISPY_handler();
 					break;
 				case "COIN":
-					COIN_handler();
+					if(isDead == false){
+						behaviorState = newState;
+						COIN_handler();
+					}
 					break;
 				case "C_FIRE_COIN":
+					behaviorState = newState;	
 					C_FIRE_COIN_handler();
 					break;
 				case "METEOR":
-					METEOR_handler();
+					if(isDead == false && behaviorState != "EXPLODED" && behaviorState != "SQUISHED" && behaviorState != "NONE" && isSquished == false){
+						behaviorState = newState;
+						METEOR_handler();
+					}
 					break;
 				case "BULL":
-					BULL_handler();
+					if(isDead == false){
+						behaviorState = newState;
+						BULL_handler();
+					}
 					break;
 				case "LOOK_UPWARDS":
+					behaviorState = newState;	
 					LOOK_UPWARDS_handler();
 					break;
 				case "HOP":
+					behaviorState = newState;	
 					HOP_handler();
 					break;
 				case "LOVE":
-					LOVE_handler();
+					if(isDead == false){
+						behaviorState = newState;	
+						LOVE_handler();
+					}
+					else if(behaviorState == "CRISPY"){
+						setBehaviorState("LOVE_CRISPY");
+					}
+					else if(behaviorState == "SQUISHED" || behaviorState == "SQUISHED_WALK"){
+						setBehaviorState("SQUISHED_WALK");
+					}
 					break;
 				case "SQUISHED_WALK":
+					behaviorState = newState;	
 					SQUISHED_WALK_handler();
 					break;
 				case "LIFT":
-					LIFT_handler();
+					if(behaviorState == "SQUISHED_WALK"){
+						setBehaviorState("SQUISHED_WALK_LIFT");
+					}else if(behaviorState != "NONE" && 
+						behaviorState != "SQUISHED" && 
+						behaviorState != "COIN" && 
+						behaviorState != "C_FIRE_COIN" && 
+						behaviorState != "EXPLODED" && 
+						behaviorState != "NONE" && 
+						behaviorState != "CRISPY"){
+						behaviorState = newState;
+						LIFT_handler();
+					}
+					break;
+				case "SQUISHED_WALK_LIFT":
+					behaviorState = newState;
+					SQUISHED_WALK_LIFT_handler();
 					break;
 				case "FALL":
+					behaviorState = newState;
 					FALL_handler();
 					break;
 				case "WALK":
-					WALK_handler();
+					if(isDead == false){
+						behaviorState = newState;
+						WALK_handler();
+					}
 					break;
 			}
 		}
@@ -524,6 +551,10 @@
 		
 		private function anim_lifted():void{
 			this.gotoAndPlay("lifted");
+		}
+		
+		private function anim_squishedLifted():void{
+			this.gotoAndPlay("squishedLift");
 		}
 		
 		private function anim_squished():void{
@@ -648,6 +679,9 @@
 				if(isDead == false){
 					lift();
 				}
+			}
+			if(behaviorState == "SQUISHED_WALK_LIFT"){
+				squishedWalkLift();
 			}
 			if(behaviorState == "LOVE"){
 				love();
@@ -803,6 +837,9 @@
 					setToDead();
 					enableInput();
 					Main.getStage().setScreenShake(true,"COIN");
+				}else if(isSquished){
+					setBehaviorState("SQUISHED_WALK");
+					enableInput();
 				}else if(running){
 					setBehaviorState("FIRE");
 					enableInput();
@@ -940,6 +977,13 @@
 				this.particleSystem.playMode("NONE");
 			}
 			fireTime++;
+		}
+		
+		public function squishedWalkLift():void{
+			selectNewLerpMultiplier("LIFT")
+			Main.requestMouseCoordinates(this);
+			lerpToPosition();
+			//anim_lifted();
 		}
 		
 		public function lift():void{
