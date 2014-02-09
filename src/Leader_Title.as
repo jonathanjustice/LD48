@@ -11,7 +11,8 @@
 			stop();
 			arrangeScreen();
 			setMultiplier(screenLerpX,screenLerpY);
-			
+			this.mouseEnabled=false;
+			this.mouseChildren=false;
 			
 		}
 		

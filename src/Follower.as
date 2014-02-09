@@ -218,25 +218,36 @@
 		}
 		
 		private function FIRE_handler():void{
-			this.eyes.burnMask.visible=true;
-			randomlyFlipRightOrLeft();
 			this.eyes.burnMask.alpha=0;
-			anim_fire();
+			this.eyes.burnMask.visible=true;
+			if(isSquished == false){
+				trace("FIRE_handler");
+				randomlyFlipRightOrLeft();
+				anim_fire();
+				isSpeechAllowed=true;
+				triggerNewSpeechBubble();
+				minDistanceBetweenOldAndNewTargets = minDistanceBetweenOldAndNewTargets_fire;
+				maxDistanceBetweenOldAndNewTargets = maxDistanceBetweenOldAndNewTargets_fire;
+				running=true;
+				walking=false;
+				isOnFire=true;
+				selectNewWalkTarget();
+			}else{
+				running=false;
+				walking=false
+				isOnFire = true;
+				anim_squishedFire();
+				trace("FIRE_handler squish");
+			}
+			
 			fireTime=0;
 			Main.getFollowerManager().abortCurrentBubble(this);
-			isSpeechAllowed=true;
-			triggerNewSpeechBubble();
-			minDistanceBetweenOldAndNewTargets = minDistanceBetweenOldAndNewTargets_fire;
-			maxDistanceBetweenOldAndNewTargets = maxDistanceBetweenOldAndNewTargets_fire;
 			particleSystem.playMode(behaviorState);
 			pauseTime=3;
-			running=true;
-			walking=false;
-			isOnFire=true;
-			selectNewWalkTarget();
 			enableInput();
 			Main.getStage().dispatchEvent(new SoundEvent("SOUND_START","FOLLOWER_FIRE",followerID));
 			//Main.getStage().dispatchEvent(new SoundEvent("SOUND_START","FOLLOWER_FIRE_NOISE",followerID));
+			trace("FIRE_handler: isSquished",isSquished);
 		}
 		
 		private function CRISPY_handler():void{
@@ -289,7 +300,9 @@
 		private function METEOR_handler():void{
 			disableInput();
 			setToDead();
-			anim_meteorLook();
+			if(isSquished == false){
+				anim_meteorLook();
+			}
 			isSpeechAllowed=true;
 			triggerNewSpeechBubble();
 			do_stuff_to_active_followers_inside_the_click_radius_excluding_this_follower("LOOK_UPWARDS");
@@ -391,7 +404,7 @@
 		}
 		
 		public function setBehaviorState(newState:String):void{
-			trace("setBehaviorState",newState);
+			//trace("setBehaviorState",newState);
 			
 			switch (newState){
 				case "null":
@@ -399,6 +412,7 @@
 				case "NONE":
 					behaviorState = newState;	
 					particleSystem.playMode(behaviorState);
+					Main.getStage().dispatchEvent(new SoundEvent("SOUND_FADE_OUT_DISPATCHER_ONLY","FOLLOWER_FIRE",followerID));
 					break;
 				case "EXPLODED":
 					behaviorState = newState;	
@@ -437,7 +451,7 @@
 					C_FIRE_COIN_handler();
 					break;
 				case "METEOR":
-					if(isDead == false && behaviorState != "EXPLODED" && behaviorState != "SQUISHED" && behaviorState != "NONE" && isSquished == false){
+					if(isDead == false && behaviorState != "EXPLODED" && behaviorState != "SQUISHED" && behaviorState != "NONE"){
 						behaviorState = newState;
 						METEOR_handler();
 					}
@@ -449,8 +463,10 @@
 					}
 					break;
 				case "LOOK_UPWARDS":
-					behaviorState = newState;	
-					LOOK_UPWARDS_handler();
+					if(behaviorState != "SQUISHED_WALK"){
+						behaviorState = newState;	
+						LOOK_UPWARDS_handler();
+					}
 					break;
 				case "HOP":
 					behaviorState = newState;	
@@ -586,6 +602,10 @@
 		
 		private function anim_squishedLifted():void{
 			this.gotoAndPlay("squishedLift");
+		}
+		
+		private function anim_squishedFire():void{
+			this.gotoAndPlay("squished_fire");
 		}
 		
 		private function anim_squished():void{
@@ -1019,18 +1039,34 @@
 		}
 		
 		private function onFire():void{
-			try {
+			this.eyes.burnMask.visible=true;
+			
+			if(isSquished == false){
 				if(this.eyes.burnMask.alpha < 1){
-					this.eyes.burnMask.alpha+=.005;
+				this.eyes.burnMask.alpha+=.005;
+				trace("2");
 				}
 			}
-			catch(error:Error){
+			if(isSquished == true){
+				if(this.eyes.burnMask.alpha < 1){
+					trace("1");
+					this.eyes.burnMask.alpha+=.1;
+				}
 			}
+			
 			chanceToSpeak();
 			var lerpAmount:Number =  (walkTarget-this.x)*multiplier_fire;
 			this.x += lerpAmount;
 			if(Math.abs(walkTarget-this.x) < 1){
-				selectNewWalkTarget();
+				if(isSquished == false){
+					selectNewWalkTarget();
+				}
+			}
+			if(this.currentLabel == "squished_fire_end"){
+				trace("reached squished_fire_end");
+				this.particleSystem.playMode("NONE");
+				setBehaviorState("NONE");
+				
 			}
 			if(fireTime > maxFireTime){
 				setBehaviorState("CRISPY");

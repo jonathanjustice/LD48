@@ -29,7 +29,7 @@
 			xStartPosition = this.x;
 			yStartPosition = spawnLocation.y*scaleMultiplier;
 			this.y+=(10*scale)+spawnLocation.y + addSomeRandom();
-			waveHeight += addSomeRandom()*5;
+			waveHeight += addSomeRandom()*150;
 			waveLength += addSomeRandom()*5;
 			speed += addSomeRandom()*5;
 			this.mouseEnabled=false;

@@ -97,6 +97,7 @@
 							//trace("newState passed was none");
 							break;
 						case "LOVE":
+							spawnDelay = spawnDelay_LOVE;
 							//trace("particleMode love");
 							var p_HEART:P_HEART = new P_HEART();
 							p_HEART.defineSpawnPoint(myFollower.getLocation(),myFollower.getVelocity(),myFollower.getScale());
