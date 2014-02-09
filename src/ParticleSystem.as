@@ -22,6 +22,7 @@
 		
 		public function playMode(newMode:String):void{
 			particleMode = newMode;
+			//trace("newMode",newMode);
 			enableParticles();
 		}
 		
@@ -85,6 +86,15 @@
 						case "NONE":
 							//trace("newState passed was none");
 							break;
+						case "LOVE":
+							spawnDelay =60;
+							//trace("particleMode love");
+							var p_HEART:P_HEART = new P_HEART();
+							p_HEART.defineSpawnPoint(myFollower.getLocation(),myFollower.getVelocity(),myFollower.getScale());
+							Main.getStage().addChildAt(p_HEART,index);
+							fireParticles.push(p_HEART);
+							//trace("particleMode love");
+							break;
 						case "FIRE":
 							var p_F:P_F = new P_F();
 							p_F.defineSpawnPoint(myFollower.getLocation(),myFollower.getVelocity(),myFollower.getScale());
@@ -136,10 +146,6 @@
 						
 							
 							break;
-							
-							
-							
-							
 							
 							
 						case "C_FIRE_COIN":

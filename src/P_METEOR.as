@@ -37,10 +37,6 @@
 			checkForImpact();
 		}
 		
-		public function getDesiredY():Number{
-			return desiredY;
-		}
-		
 		private function calculatePreviousPositions():void{
 			previousPosition.x = this.x;
 			previousPosition.y = this.y;
@@ -53,6 +49,10 @@
 		
 		public function getVelocity():Point{
 			return velocity;
+		}
+		
+		public function getDesiredY():Number{
+			return desiredY;
 		}
 		
 		public function getLocation():Point{

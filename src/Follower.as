@@ -351,10 +351,13 @@
 			this.eyes.gotoAndStop("center");
 			walking=true;
 			isOnFire=false;
+			//trace("what");
+			trace(getBehaviorState());
+			particleSystem.playMode(behaviorState);
 			this.eyes.burnMask.alpha=0;
 			this.eyes.burnMask.visible=false;
-			setBehaviorState("NONE");
-			setBehaviorState("WALK");
+			//setBehaviorState("NONE");
+			//setBehaviorState("WALK");
 			triggerNewSpeechBubble();
 			isSpeechAllowed=true;
 			triggerNewSpeechBubble();
