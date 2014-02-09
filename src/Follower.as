@@ -191,12 +191,25 @@
 		
 		private function EXPLODED_handler():void{
 			anim_exploded();
-			particleSystem.playMode(behaviorState);
-			setToDead();
+			if(isSquished == true){
+				particleSystem.playMode("EXPLODED_FAST_MODE");
+			}else{
+				particleSystem.playMode(behaviorState);
+			}
+			
+			isDead=false;
+			isOnFire=false;
+			running=false;
+			this.eyes.burnMask.alpha=0;
+			this.eyes.burnMask.visible=false;
 		}
 		
 		private function SQUISHED_handler():void{
-			setToDead();
+			this.eyes.burnMask.alpha=0;
+			this.eyes.burnMask.visible=false;
+			isDead=false;
+			isOnFire=false;
+			running=false;
 			anim_squished();
 			isSquished = true;
 			Main.getStage().dispatchEvent(new SoundEvent("SOUND_START","FOLLOWER_SQUISH",followerID));
@@ -248,6 +261,8 @@
 				setBehaviorState("C_FIRE_COIN");
 				Main.getStage().dispatchEvent(new SoundEvent("SOUND_START","FOLLOWER_ROCKET_COIN",followerID));
 			}else {
+				this.eyes.burnMask.alpha=0;
+				this.eyes.burnMask.visible=false;
 				Main.getFollowerManager().abortCurrentBubble(this);
 				isSpeechAllowed=true;
 				triggerNewSpeechBubble();
@@ -292,6 +307,8 @@
 				setBehaviorState("FIRE");
 				this.eyes.burnMask.alpha=preBullAlpha;
 				running=true;
+			}else if(isSquished == true){
+			setBehaviorState("SQUISHED_WALK");
 			}else{
 				setBehaviorState("WALK");
 				walking=true;
@@ -305,8 +322,11 @@
 		private function SQUISHED_WALK_handler():void{
 			anim_ressurecting();
 			this.eyes.visible=false;
+			this.eyes.burnMask.alpha=0;
+			isOnFire=false;
 			running=false;
 			walking=true;
+			isDead=false;
 			minDistanceBetweenOldAndNewTargets = minDistanceBetweenOldAndNewTargets_walk;
 			maxDistanceBetweenOldAndNewTargets = maxDistanceBetweenOldAndNewTargets_walk;
 		}
@@ -317,6 +337,8 @@
 			Main.getFollowerManager().abortCurrentBubble(this);
 			isSpeechAllowed=true;
 			//triggerNewSpeechBubble();
+			//isOnFire=false;
+			//running=false;
 		}
 		
 		private function LIFT_handler():void{
@@ -355,13 +377,10 @@
 			this.eyes.gotoAndStop("center");
 			walking=true;
 			isOnFire=false;
-			//trace("what");
-			trace(getBehaviorState());
+			running=false;
 			particleSystem.playMode(behaviorState);
 			this.eyes.burnMask.alpha=0;
 			this.eyes.burnMask.visible=false;
-			//setBehaviorState("NONE");
-			//setBehaviorState("WALK");
 			triggerNewSpeechBubble();
 			isSpeechAllowed=true;
 			triggerNewSpeechBubble();
@@ -372,7 +391,7 @@
 		}
 		
 		public function setBehaviorState(newState:String):void{
-			//trace("setBehaviorState",newState);
+			trace("setBehaviorState",newState);
 			
 			switch (newState){
 				case "null":
@@ -403,9 +422,14 @@
 					CRISPY_handler();
 					break;
 				case "COIN":
-					if(isDead == false){
-						behaviorState = newState;
-						COIN_handler();
+					if(isDead == false && behaviorState != "CRISPY" &&  behaviorState != "SQUISHED"){
+						if(behaviorState == "SQUISHED_WALK"){
+							setBehaviorState("EXPLODED")
+							Main.getStage().dispatchEvent(new SoundEvent("SOUND_START","FOLLOWER_COIN",followerID));
+						}else{
+							behaviorState = newState;
+							COIN_handler();
+						}
 					}
 					break;
 				case "C_FIRE_COIN":
@@ -419,7 +443,7 @@
 					}
 					break;
 				case "BULL":
-					if(isDead == false){
+					if((isDead == false || behaviorState == "SQUISHED_WALK") && behaviorState != "EXPLODED" && behaviorState != "SQUISHED"){
 						behaviorState = newState;
 						BULL_handler();
 					}
@@ -433,14 +457,14 @@
 					HOP_handler();
 					break;
 				case "LOVE":
-					if(isDead == false){
+					if(isDead == false && behaviorState != "SQUISHED_WALK" && behaviorState != "EXPLODED" && behaviorState != "SQUISHED"){
 						behaviorState = newState;	
 						LOVE_handler();
 					}
 					else if(behaviorState == "CRISPY"){
 						setBehaviorState("LOVE_CRISPY");
 					}
-					else if(behaviorState == "SQUISHED" || behaviorState == "SQUISHED_WALK"){
+					else if(behaviorState == "SQUISHED" || behaviorState == "SQUISHED_WALK" || behaviorState == "EXPLODED"){
 						setBehaviorState("SQUISHED_WALK");
 					}
 					break;
@@ -671,7 +695,7 @@
 				//walk();
 			}
 			if(behaviorState == "EXPLODED"){
-				//walk();
+				while_EXPLODED();
 			}
 			if(behaviorState == "LOVE_FIRE"){
 				walk();
@@ -779,11 +803,10 @@
 			
 		}
 		
-		
-		
 		//if the guy isn't dead, then allow him to be thrown
 		public function startToss(tossValue:Number,tossMode:String="none"):void{
 			var preBullAlpha:Number=this.eyes.burnMask.alpha;
+			
 			if(behaviorState != "SQUISHED" 
 			   && behaviorState != "COIN" 
 			   && behaviorState != "EXPLODED" 
@@ -793,28 +816,40 @@
 			   && isDead != true
 			   && behaviorState != "NONE"
 			   && isBeingTossed == false){
-				this.y-=2;
-				isBeingTossed=true;
+					trace(tossMode);
 				switch(tossMode){
 					case "bull":
-						var bullModifier:Number = Math.random()*150 -75;
-						velocity.y = -.3*Math.abs((200+bullModifier)/tossValue);
-						velocity.x = bullModifier/10;
+						if(isSquished == true){
+							setBehaviorState("SQUISHED");
+							trace("SQUISHED");
+						}else{
+							this.y-=2;
+							var bullModifier:Number = Math.random()*150 -75;
+							velocity.y = -.3*Math.abs((200+bullModifier)/tossValue);
+							velocity.x = bullModifier/10;
+							isBeingTossed=true;
+							setBehaviorState("FALL");
+							this.eyes.burnMask.alpha=preBullAlpha;
+							trace("ELSE");
+						}
 						break;
 					case"none":
+						this.y-=2;
 						velocity.y = -.3*Math.abs(800/tossValue);
 						velocity.x = -tossValue/50;
+						isBeingTossed=true;
+							trace("NONE");
 						if(behaviorState != "CRISPY"){
 							var setOnFireChance:Number = Math.random()*10;
 							if(setOnFireChance>9.5){
 								setBehaviorState("FIRE");
 							}
 						}
+						setBehaviorState("FALL");
+						this.eyes.burnMask.alpha=preBullAlpha;
 						break;
 				}
-				setBehaviorState("FALL");
 			}
-			this.eyes.burnMask.alpha=preBullAlpha;
 		}
 		
 		private function onHop():void{
@@ -836,7 +871,7 @@
 				if(this.x < 0){
 					velocity.x*=-1;
 				}
-				
+			//hit the ground
 			}else{
 				var preBullAlpha:Number=this.eyes.burnMask.alpha;
 				this.y = groundPlane;
@@ -882,14 +917,15 @@
 		}
 		
 		private function onCoin():void{
+			this.eyes.burnMask.visible=false;
+			this.eyes.burnMask.alpha=0;
 			if(this.currentLabel == "coinPop"){
 				particleSystem.playMode(behaviorState);
 			}
-			if(this.currentLabel == "coinEnd"){
+			if(this.currentLabel == "coinEnd" ){
 				Main.getStage().setScreenShake(true,"COIN");
 				setBehaviorState("EXPLODED");
 				Main.getStage().dispatchEvent(new SoundEvent("SOUND_START","FOLLOWER_COIN",followerID));
-				//Main.getStage().dispatchEvent(new SoundEvent("SOUND_START","FOLLOWER_SQUISH",followerID));
 			}
 		}
 		
@@ -914,6 +950,12 @@
 			if(loveTimer >= maxLoveTime){
 				setBehaviorState("WALK");
 				loveTimer=0;
+			}
+		}
+		
+		private function while_EXPLODED():void{
+			if(this.currentLabel != "squished_end"){
+				setBehaviorState("SQUISHED");
 			}
 		}
 		

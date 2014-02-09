@@ -12,6 +12,7 @@
 		private var spawnDelay:int=5;
 		private var spawnDelay_DEFAULT:int=5;
 		private var spawnDelay_LOVE:int=55;
+		private var spawnDelay_EXPLODED_FAST_MODE:int=1;
 		private var spawnDelayCounter:int=0;
 		private var myFollower:MovieClip;
 		private var lifeTime:int=300;
@@ -26,6 +27,9 @@
 			particleMode = newMode;
 			if(particleMode == "LOVE"){
 				spawnDelay = spawnDelay_LOVE;
+			}if(particleMode == "EXPLODED_FAST_MODE"){
+				spawnDelay = spawnDelay_EXPLODED_FAST_MODE;
+				particleMode = "COIN";
 			}else{
 				spawnDelay = spawnDelay_DEFAULT;
 			}
