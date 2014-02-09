@@ -10,6 +10,8 @@
 		private var liftParticles:Array = new Array();
 		private var meteorParticles:Array = new Array();
 		private var spawnDelay:int=5;
+		private var spawnDelay_DEFAULT:int=5;
+		private var spawnDelay_LOVE:int=55;
 		private var spawnDelayCounter:int=0;
 		private var myFollower:MovieClip;
 		private var lifeTime:int=300;
@@ -22,7 +24,11 @@
 		
 		public function playMode(newMode:String):void{
 			particleMode = newMode;
-			//trace("newMode",newMode);
+			if(particleMode == "LOVE"){
+				spawnDelay = spawnDelay_LOVE;
+			}else{
+				spawnDelay = spawnDelay_DEFAULT;
+			}
 			enableParticles();
 		}
 		
@@ -87,7 +93,6 @@
 							//trace("newState passed was none");
 							break;
 						case "LOVE":
-							spawnDelay =60;
 							//trace("particleMode love");
 							var p_HEART:P_HEART = new P_HEART();
 							p_HEART.defineSpawnPoint(myFollower.getLocation(),myFollower.getVelocity(),myFollower.getScale());

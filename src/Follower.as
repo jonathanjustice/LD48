@@ -61,6 +61,9 @@
 		private var isTouchingBull:Boolean=false;
 		private var isBeingTossed:Boolean=false;
 		private var followerID:int=0;
+		private var maxLoveTime:int=230;
+		private var loveTimer:int=0;
+		
 		public function Follower(){
 			setUp();
 			initialSetup();
@@ -202,6 +205,7 @@
 		}
 		
 		private function FIRE_handler():void{
+			this.eyes.burnMask.visible=true;
 			randomlyFlipRightOrLeft();
 			this.eyes.burnMask.alpha=0;
 			anim_fire();
@@ -657,6 +661,9 @@
 			if(behaviorState == "LOVE_SQUISHED"){
 				//walk();
 			}
+			if(behaviorState == "LOVE"){
+				while_LOVE();
+			}
 			if(behaviorState == "SQUISHED_WALK"){
 				onSquishedWalk();
 			}
@@ -899,6 +906,14 @@
 				particleSystem.playMode("NONE");
 				//setBehaviorState("NONE");
 				enableInput();
+			}
+		}
+		
+		private function while_LOVE():void{
+			loveTimer++;
+			if(loveTimer >= maxLoveTime){
+				setBehaviorState("WALK");
+				loveTimer=0;
 			}
 		}
 		
