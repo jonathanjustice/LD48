@@ -218,10 +218,10 @@
 		}
 		
 		private function FIRE_handler():void{
-			this.eyes.burnMask.alpha=0;
-			this.eyes.burnMask.visible=true;
 			if(isSquished == false){
-				trace("FIRE_handler");
+				this.eyes.visible=true;
+				this.eyes.burnMask.alpha=0;
+				this.eyes.burnMask.visible=true;
 				randomlyFlipRightOrLeft();
 				anim_fire();
 				isSpeechAllowed=true;
@@ -233,6 +233,9 @@
 				isOnFire=true;
 				selectNewWalkTarget();
 			}else{
+				this.eyes.visible=false;
+				this.eyes.burnMask.alpha=0;
+				this.eyes.burnMask.visible=false;
 				running=false;
 				walking=false
 				isOnFire = true;
@@ -247,11 +250,9 @@
 			enableInput();
 			Main.getStage().dispatchEvent(new SoundEvent("SOUND_START","FOLLOWER_FIRE",followerID));
 			//Main.getStage().dispatchEvent(new SoundEvent("SOUND_START","FOLLOWER_FIRE_NOISE",followerID));
-			trace("FIRE_handler: isSquished",isSquished);
 		}
 		
 		private function CRISPY_handler():void{
-			
 			Main.getStage().dispatchEvent(new SoundEvent("SOUND_FADE_OUT_DISPATCHER_ONLY","FOLLOWER_FIRE",followerID));
 			//Main.getStage().dispatchEvent(new SoundEvent("SOUND_FADE_OUT_DISPATCHER_ONLY","FOLLOWER_FIRE_NOISE",followerID));
 			setToDead();
@@ -836,7 +837,6 @@
 			   && isDead != true
 			   && behaviorState != "NONE"
 			   && isBeingTossed == false){
-					trace(tossMode);
 				switch(tossMode){
 					case "bull":
 						if(isSquished == true){
@@ -850,7 +850,6 @@
 							isBeingTossed=true;
 							setBehaviorState("FALL");
 							this.eyes.burnMask.alpha=preBullAlpha;
-							trace("ELSE");
 						}
 						break;
 					case"none":
@@ -858,7 +857,6 @@
 						velocity.y = -.3*Math.abs(800/tossValue);
 						velocity.x = -tossValue/50;
 						isBeingTossed=true;
-							trace("NONE");
 						if(behaviorState != "CRISPY"){
 							var setOnFireChance:Number = Math.random()*10;
 							if(setOnFireChance>9.5){
@@ -902,6 +900,10 @@
 					setToDead();
 					enableInput();
 					Main.getStage().setScreenShake(true,"COIN");
+				}else if(isOnFire == true && isSquished == true){
+					anim_squishedFire();
+					setBehaviorState("FIRE");
+					enableInput();
 				}else if(isSquished){
 					setBehaviorState("SQUISHED_WALK");
 					enableInput();
@@ -974,7 +976,10 @@
 		}
 		
 		private function while_EXPLODED():void{
-			if(this.currentLabel != "squished_end"){
+			if(this.currentLabel == "exploded_particles_end"){
+				particleSystem.playMode("NONE");
+			}
+			if(this.currentLabel == "squished_end"){
 				setBehaviorState("SQUISHED");
 			}
 		}
@@ -1039,40 +1044,40 @@
 		}
 		
 		private function onFire():void{
-			this.eyes.burnMask.visible=true;
-			
+			fireTime++;
+			//this.eyes.burnMask.visible=true;
+			chanceToSpeak();
+			var lerpAmount:Number =  (walkTarget-this.x)*multiplier_fire;
 			if(isSquished == false){
 				if(this.eyes.burnMask.alpha < 1){
-				this.eyes.burnMask.alpha+=.005;
-				trace("2");
+					this.eyes.burnMask.alpha+=.005;
+				}
+				if(fireTime > maxFireTime){
+					setBehaviorState("CRISPY");
+					this.particleSystem.playMode("NONE");
 				}
 			}
 			if(isSquished == true){
-				if(this.eyes.burnMask.alpha < 1){
-					trace("1");
-					this.eyes.burnMask.alpha+=.1;
+				if(this.currentLabel == "squished_fire_stop_running"){
+					lerpAmount=0;
+					disableInput();
+				}
+				if(this.currentLabel == "squished_fire_end"){
+					this.particleSystem.playMode("NONE");
+					setBehaviorState("NONE");
+					behaviorState="CRISPY";
+					isCrispy=true;
+					isDead=true;
+					
 				}
 			}
 			
-			chanceToSpeak();
-			var lerpAmount:Number =  (walkTarget-this.x)*multiplier_fire;
+			
 			this.x += lerpAmount;
 			if(Math.abs(walkTarget-this.x) < 1){
-				if(isSquished == false){
-					selectNewWalkTarget();
-				}
+				selectNewWalkTarget();
 			}
-			if(this.currentLabel == "squished_fire_end"){
-				trace("reached squished_fire_end");
-				this.particleSystem.playMode("NONE");
-				setBehaviorState("NONE");
-				
-			}
-			if(fireTime > maxFireTime){
-				setBehaviorState("CRISPY");
-				this.particleSystem.playMode("NONE");
-			}
-			fireTime++;
+			
 		}
 		
 		public function squishedWalkLift():void{
@@ -1083,6 +1088,9 @@
 		}
 		
 		public function lift():void{
+			if(isOnFire == true && isSquished == true){
+				anim_squishedFire();
+			}
 			selectNewLerpMultiplier("LIFT")
 			Main.requestMouseCoordinates(this);
 			lerpToPosition();

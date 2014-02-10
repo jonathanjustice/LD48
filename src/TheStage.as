@@ -92,11 +92,13 @@
 					maxShakeTime = 9999;
 					shakeRandomNess.x=10;
 					shakeRandomNess.y=5;
+					Main.getFollowerManager().setSleep(true);
 					break;
 				case "BULL_IMPACT":
 					maxShakeTime=30;
 					shakeRandomNess.x=50;
 					shakeRandomNess.y=25;
+					Main.getFollowerManager().setSleep(true);
 					break;
 				case "METEOR_FALL":
 				
@@ -108,6 +110,7 @@
 					shakeRandomNess.x=20;
 					shakeRandomNess.y=10;
 					setScreenFlash(1);
+					Main.getFollowerManager().setSleep(true);
 					break;
 				case "COIN":
 					//trace("SQUISH");
@@ -116,6 +119,7 @@
 					this.y-=10;
 					shakeRandomNess.x=20;
 					shakeRandomNess.y=10;
+					Main.getFollowerManager().setSleep(true);
 					break;
 			}
 		}

@@ -13,6 +13,9 @@
 		private var startBounce:Boolean=false;
 		private var ID_generator:int=0;
 		private var bullID:int=-1;
+		private var gameSleep:Boolean=false;
+		private var sleepTimer:int=0;
+		private var maxSleepTime:int=1;
 		public function FollowerManager(){
 			//setUp();
 		}
@@ -63,38 +66,54 @@
 			return arrayOfActivatedFollowers;
 		}
 		
+		public function getSleep():Boolean{
+			return gameSleep;
+		}
+		
+		public function setSleep(newState:Boolean):void{
+			gameSleep = newState;
+		}
 		
 		private function updateLoop(e:Event):void{
-			for(var a:int=0;a<followers.length;a++){
-				//trace(a);
-				followers[a].updateLoop();
-			}
-			for(var b:int=0;b<speechBubbles.length;b++){
-				//trace(b);
-				speechBubbles[b].updateLoop();
-				if(speechBubbles[b].getMarkedForDeletion() == true){
-					speechBubbles[b].getFollower().allowSpeechBubble();
-					Main.theStage.removeChild(speechBubbles[b]);
-					speechBubbles.splice(b,1);
+			if(gameSleep == false){
+				for(var a:int=0;a<followers.length;a++){
+					//trace(a);
+					followers[a].updateLoop();
 				}
-			}
-			for(var c:int=0;c<meteors.length;c++){
-				//trace(c);
-				meteors[c].updateLoop();
-				if(meteors[c].getMarkedForDeletion() == true){
-					//meteors[c].
-					Main.theStage.removeChild(meteors[c]);
-					meteors.splice(c,1);
+				for(var b:int=0;b<speechBubbles.length;b++){
+					//trace(b);
+					speechBubbles[b].updateLoop();
+					if(speechBubbles[b].getMarkedForDeletion() == true){
+						speechBubbles[b].getFollower().allowSpeechBubble();
+						Main.theStage.removeChild(speechBubbles[b]);
+						speechBubbles.splice(b,1);
+					}
 				}
-			}
-			for(var d:int=0;d<bulls.length;d++){
-				//trace(d);
-				bulls[d].updateLoop();
-				if(bulls[d].getMarkedForDeletion() == true){
-					//bulls[d].
-					Main.theStage.removeChild(bulls[d]);
-					bulls.splice(d,1);
+				for(var c:int=0;c<meteors.length;c++){
+					//trace(c);
+					meteors[c].updateLoop();
+					if(meteors[c].getMarkedForDeletion() == true){
+						//meteors[c].
+						Main.theStage.removeChild(meteors[c]);
+						meteors.splice(c,1);
+					}
 				}
+				for(var d:int=0;d<bulls.length;d++){
+					//trace(d);
+					bulls[d].updateLoop();
+					if(bulls[d].getMarkedForDeletion() == true){
+						//bulls[d].
+						Main.theStage.removeChild(bulls[d]);
+						bulls.splice(d,1);
+					}
+				}
+			}else{
+				sleepTimer++;
+				if(sleepTimer >= maxSleepTime){
+					sleepTimer=0;
+					gameSleep = false;
+				}
+				
 			}
 		}
 		
