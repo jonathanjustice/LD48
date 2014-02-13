@@ -2,22 +2,81 @@
 	import flash.display.MovieClip;
 	import flash.events.MouseEvent;
 	import flash.events.*;
+	import customEvents.*;
 	public class Leader_Title extends default_screen{
 		private var screenLerpX:Number=.07;
 		private var screenLerpY:Number=.07;
+		
+		private var currency_1:int=0;
+		private var currency_2:int=0;
+		private var currency_3:int=0;
 		public function Leader_Title(){
-			this.y = -250;
-			setUp();
-			stop();
 			arrangeScreen();
-			setMultiplier(screenLerpX,screenLerpY);
-			this.mouseEnabled=false;
-			this.mouseChildren=false;
-			
+			setUp();
+		}
+		
+		public function addCurrency(event:CurrencyEvent):void {
+			switch(event.result){
+				case "currency_1":
+					currency_1 += event.C_amount;
+					break;
+				case "currency_2":
+					currency_2 += event.C_amount;;
+					break;
+				case "currency_3":
+					currency_3 += event.C_amount;;
+					break;
+			}
+			updateResources();
+		}
+		
+		public function deductCurrency(event:CurrencyEvent):void {
+			switch(event.result){
+				case "currency_1":
+					currency_1 -= event.C_amount;
+					break;
+				case "currency_2":
+					currency_2 -= event.C_amount;;
+					break;
+				case "currency_3":
+					currency_3 -= event.C_amount;;
+					break;
+			}
+			updateResources();
+		}
+		
+		public function updateResources():void{
+			txt_currency_1.text = String(currency_1);
+			txt_currency_2.text = String(currency_2);
+			txt_currency_3.text = String(currency_3);
+		}
+		
+		public function getCurrency_1():int{
+			return currency_1;
+		}
+		
+		public function getCurrency_2():int{
+			return currency_2;
+		}
+		
+		public function getCurrency_3():int{
+			return currency_3;
 		}
 		
 		private function arrangeScreen():void{
-			//trace("arrange");
+			this.y = -250;
+			stop();
+			setMultiplier(screenLerpX,screenLerpY);
+			this.mouseEnabled=false;
+			this.mouseChildren=false;
+			Main.theStage.addEventListener(CurrencyEvent.CURRENCY_ADD, addCurrency);
+			Main.theStage.addEventListener(CurrencyEvent.CURRENCY_DEDUCT, deductCurrency);
+			updateResources();
+			
+			Main.getStage().dispatchEvent(new CurrencyEvent("CURRENCY_ADD","currency_1",32));
+			Main.getStage().dispatchEvent(new CurrencyEvent("CURRENCY_DEDUCT","currency_1",19));
+			Main.getStage().dispatchEvent(new CurrencyEvent("CURRENCY_ADD","currency_2",232));
+			Main.getStage().dispatchEvent(new CurrencyEvent("CURRENCY_ADD","currency_3",32333));
 			updateScreenLocation();
 			stopAllButtonsFromAnimating();
 		}

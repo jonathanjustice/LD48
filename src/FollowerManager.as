@@ -16,12 +16,15 @@
 		private var gameSleep:Boolean=false;
 		private var sleepTimer:int=0;
 		private var maxSleepTime:int=1;
+		public static var statue_base:Statue_base;
 		public function FollowerManager(){
 			//setUp();
 		}
 		
 		public function setUp():void{
-			spawnNewLeaderStatue();
+			//spawnNewLeaderStatue();
+			statue_base = new Statue_base();
+			Main.theStage.addChild(statue_base);
 			spawnNewFollower();
 			enableUpdateLoop();
 		}

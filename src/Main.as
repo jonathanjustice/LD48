@@ -16,11 +16,16 @@
 		public static var actionIndicator_mouse:ActionIndicator_mouse;
 		public static var uiContainter:Object;
 		private var actionMenu:ActionMenu;
+		private var editMenu:EditMenu;
 		private var leader_Title:Leader_Title;
 		private var stageNode:StageNode;
 		public static var originalStageX:int=800;
 		private var bg_art:BG_art = new BG_art;
 		private var soundManager:SoundManager;
+		
+		
+		
+		
 		public function Main() {
 			if (stage) init();
             else addEventListener(Event.ADDED_TO_STAGE, init);
@@ -39,6 +44,7 @@
         }
 		//Main.theStage.dispatchEvent(new SoundEvent("SOUND_START","ENEMY_PICKED_UP"));
 		private function setUp():void{
+			
 			screenFlash_FULL = new screenFlash_Full();
 			theStage = new TheStage(screenFlash_FULL);
 			soundManager = new SoundManager(theStage);
@@ -53,10 +59,12 @@
 			addKeyboardInput();
 			dialogs = new Dialogs();
 			actionMenu = new ActionMenu();
+			
 			actionIndicator_mouse = new ActionIndicator_mouse();
 			actionManager = new ActionManager();
 			followerManager = new FollowerManager();
 			followerManager.setUp();
+			editMenu = new EditMenu();
 			this.addEventListener(Event.ENTER_FRAME, updateScreenLocations);
 		}
 		
@@ -102,6 +110,7 @@
 			actionMenu.updateScreenLocation();
 			uiContainter.setChildIndex(actionIndicator_mouse, parent.numChildren-1)
 			actionMenu.lerpToPosition();
+			editMenu.lerpToPosition();
 			theStage.updateScreenLocation();
 			actionIndicator_mouse.setMouseCoordinates(stage.mouseX,stage.mouseY);
 			actionIndicator_mouse.lerpToPosition();

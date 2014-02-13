@@ -15,9 +15,21 @@
 		private var multiplierX:Number=.1;
 		private var multiplierY:Number=.1;
 		private var lerping:Boolean=true;
+		private var screenID:String="";
 		
-		public function Screen_Default(){			
+		public function Screen_Default(){
 			setUp();
+			defineScreenID();
+			getScreenID();
+		}
+		
+		public function defineScreenID():void{
+			screenID = String(this);
+		}
+		
+		public function getScreenID():String{
+			return screenID;
+			//trace("screenID",screenID);
 		}
 		
 		public function setMultiplier(newAmountX:Number,newAmountY:Number):void{
@@ -188,6 +200,11 @@
 			//trace(Main);
 			//trace(Main.theStage);
 			Main.theStage.addChild(this);
+		}
+		
+		public function setDesiredLerpPoint(newX:Number,newY:Number):void{
+			desiredX = newX;
+			desiredY = newY;
 		}
 		
 		public function setMouseCoordinates(newX:Number,newY:Number):void{
