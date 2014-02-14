@@ -54,13 +54,19 @@
 			if(Math.abs(desiredX-this.x) > 0){
 				resumeLerping();
 			}
+			doSpecial();
 		}
 		
-		private function resumeLerping():void{
+		public function doSpecial():void{
+			//do stuff in descendent classes
+			
+		}
+		
+		public function resumeLerping():void{
 			lerping = true;
 		}
 		
-		private function pauseLerping():void{
+		public function pauseLerping():void{
 			lerping = false;
 		}
 		
@@ -75,23 +81,48 @@
 			}
 		}
 		
+		public function stopAllStatuePartsFromAnimating():void {
+			//trace("stopAllButtonsFromAnimating");
+			for (var i:int = 0; i < this.numChildren; i++) {
+				if (this.getChildAt(i) is MovieClip) {	
+					if (this.getChildAt(i).name.indexOf("statue_") != -1) {
+						dumbButtonStoppingWorkaround(this.getChildAt(i) as MovieClip);
+					}
+				}
+			}
+		}
+		
 		private function dumbButtonStoppingWorkaround(movieClip:MovieClip):void{
 			movieClip.stop();
 		}
 			
+			
+			public function removeAllListeners():void{
+				removeClickHandler();
+				removeStageClickHandler();
+				removeOverHandler();
+				removeDownHandler();
+				removeUpHandler();
+				removeOutHandler();
+			}
+			
+			public function addAllListeners():void{
+				addClickHandler();
+				addStageClickHandler();
+				addOverHandler();
+				addDownHandler();
+				addUpHandler();
+				addOutHandler();
+			}
 		
 		public function setUp():void {
 			//addDynamicBlocker();
-			addClickHandler();
-			addOverHandler();
-			addDownHandler();
-			addUpHandler();
-			addOutHandler();
 			mouseEnabledHandler();
+			addAllListeners();
 			addScreenToUIContainer();
 		}
 		
-		//CLICKING
+		//CLICKING ON THIS SCREEN
 		public function addClickHandler():void{
 			this.addEventListener(MouseEvent.CLICK, clickHandler);
 		}
@@ -102,6 +133,19 @@
 		
 		public function clickHandler(event:MouseEvent):void{
 			//defined in other classes
+		}
+		
+		//CLICKING ON STAGE
+		public function addStageClickHandler():void{
+			Main.theStage.addEventListener(MouseEvent.CLICK, stageClickHandler);
+		}
+		
+		public function stageClickHandler(event:MouseEvent):void{
+			//defined in other classes
+		}
+		
+		public function removeStageClickHandler():void{
+			Main.theStage.removeEventListener(MouseEvent.CLICK, clickHandler);
 		}
 		
 		//MOUSING DOWN
@@ -214,9 +258,7 @@
 		
 		//removing the screen
 		public function removeThisScreen():void{
-			removeOutHandler();
-			removeOverHandler();
-			removeClickHandler();
+			removeAllListeners();
 			removeDynamicBlocker();
 			Main.theStage.removeChild(this);
 		}

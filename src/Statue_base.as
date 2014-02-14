@@ -9,11 +9,13 @@
 		public function Statue_base(){
 			setUp();
 			arrangeScreen();
-			
-			
+			defineScreenID();
 		}
 		
 		public override function arrangeScreen():void{
+			Main.theStage.addEventListener(ScreenEvent.PREVIEW_BUILD, previewBuild);
+			Main.theStage.addEventListener(ScreenEvent.BUILD_START, buildStart);
+			Main.theStage.addEventListener(ScreenEvent.BUILD_ABORT, buildStart);
 			//trace("arrange");
 			//trace(Main,"base");
 			//trace(Main.getStage());
@@ -23,7 +25,50 @@
 			stop();
 			updateScreenLocation();
 			stopAllButtonsFromAnimating();
+			stopAllStatuePartsFromAnimating();
 			setMultiplier(screenLerpX,screenLerpY);
+			this.statue_feet.mouseEnabled=false;
+			this.statue_feet.mouseChildren=false;
+		}
+		
+		public function showEditButton():void{
+			this.btn_edit.visible=true;
+		}
+		
+		public function hideEditButton():void{
+			this.btn_edit.visible=false;
+			
+		}
+		
+		public function buildAbort(event:ScreenEvent):void {
+			if(this.getScreenID() == "[object "+event.screenID+"]"){
+				//trace(this,"build started");
+				//switchLerpMode("ENTER");
+				//trace("event.buildID",event.buildID);
+				this.statue_feet.gotoAndStop(event.buildID);
+				showEditButton();
+			}
+		}
+		
+		public function buildStart(event:ScreenEvent):void {
+			if(this.getScreenID() == "[object "+event.screenID+"]"){
+				//trace(this,"build started");
+				//switchLerpMode("ENTER");
+				//trace("event.buildID",event.buildID);
+				this.statue_feet.gotoAndStop(event.buildID);
+				showEditButton();
+			}
+		}
+		
+		public function previewBuild(event:ScreenEvent):void {
+			//trace("preview build");
+			//trace("event.buildID",event.buildID);
+			if(this.getScreenID() == "[object "+event.screenID+"]"){
+				//trace(this,"build preview");
+				//switchLerpMode("ENTER");
+				this.statue_feet.gotoAndStop(event.buildID);
+				
+			}
 		}
 		
 		
@@ -34,21 +79,7 @@
 				case "hitbox_EDIT":
 					trace("EDIT");
 					Main.getStage().dispatchEvent(new ScreenEvent("SCREEN_OPEN","EditMenu"));
-					break;
-				case "hitbox_METEOR":
-					Main.getActionManager().setActiveAction("METEOR");
-					break;
-				case "hitbox_LOVE":
-					Main.getActionManager().setActiveAction("LOVE");
-					break;
-				case "hitbox_LIFT":
-					Main.getActionManager().setActiveAction("LIFT");
-					break;
-				case "hitbox_COIN":
-					Main.getActionManager().setActiveAction("COIN");
-					break;
-				case "hitbox_BULL":
-					Main.getActionManager().setActiveAction("BULL");
+					hideEditButton();
 					break;
 			}
 		}
