@@ -4,6 +4,7 @@
 	import flash.display.MovieClip;
 	import flash.geom.Point;
 	import customEvents.SoundEvent;
+	import customEvents.CurrencyEvent;
 	public class Follower extends default_screen{
 		private var walkTarget:int=0;
 		private var maxFireTime:int=300;
@@ -63,6 +64,10 @@
 		private var followerID:int=0;
 		private var maxLoveTime:int=230;
 		private var loveTimer:int=0;
+		
+		//currency stuff
+		private var fireEarnTimer:int=0;
+		private var fireEarnTimerMax:int=10;
 		
 		public function Follower(){
 			setUp();
@@ -205,6 +210,11 @@
 		}
 		
 		private function SQUISHED_handler():void{
+			if(!isSquished){
+				Main.getStage().dispatchEvent(new CurrencyEvent("CURRENCY_ADD","currency_SQUISH",75));
+			}else{
+				
+			}
 			this.eyes.burnMask.alpha=0;
 			this.eyes.burnMask.visible=false;
 			isDead=false;
@@ -980,7 +990,10 @@
 				particleSystem.playMode("NONE");
 			}
 			if(this.currentLabel == "squished_end"){
-				setBehaviorState("SQUISHED");
+				behaviorState = "SQUISHED"
+				//setBehaviorState("SQUISHED");
+				Main.getStage().dispatchEvent(new CurrencyEvent("CURRENCY_ADD","currency_SQUISH",75));
+				Main.getStage().dispatchEvent(new CurrencyEvent("CURRENCY_ADD","currency_COIN",250));
 			}
 		}
 		
@@ -1044,6 +1057,11 @@
 		}
 		
 		private function onFire():void{
+			fireEarnTimer++;
+			if(fireEarnTimer >= fireEarnTimerMax){
+				fireEarnTimer=0;
+				Main.getStage().dispatchEvent(new CurrencyEvent("CURRENCY_ADD","currency_FIRE",10));
+			}
 			fireTime++;
 			//this.eyes.burnMask.visible=true;
 			chanceToSpeak();

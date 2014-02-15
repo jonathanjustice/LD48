@@ -4,8 +4,8 @@
 	import flash.events.*;
 	public class ActionIndicator_mouse extends default_screen{
 		private var activeState:String;
-		private var mouseLerpX:Number=.25;
-		private var mouseLerpY:Number=.25;
+		private var mouseLerpX:Number=.27;
+		private var mouseLerpY:Number=.27;
 		public function ActionIndicator_mouse(){
 			setUp();
 			stop();
