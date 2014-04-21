@@ -7,6 +7,7 @@
 		private var screenLerpX:Number=.07;
 		private var screenLerpY:Number=.07;
 		private var lerpMode:String="IDLE";
+		private var isActive:Boolean=false;
 		public function EditMenu(){
 			setUp();
 			defineScreenID();
@@ -15,7 +16,6 @@
 		
 		public function switchLerpMode(newMode:String):void{
 			lerpMode = newMode;
-			trace("switch to lerpMode:",lerpMode);
 			updateLerpPoints();
 		}
 		
@@ -30,9 +30,6 @@
 			updateLerpPoints();
 			stopAllButtonsFromAnimating();
 			removeAllListeners();
-			
-			
-			//Main.getStage().dispatchEvent(new ScreenEvent("SCREEN_CLOSE","EditMenu"));
 		}
 		
 		public override function doSpecial():void{
@@ -47,6 +44,7 @@
 		
 		public function openScreen(event:ScreenEvent):void {
 			if(this.getScreenID() == "[object "+event.screenID+"]"){
+				isActive = true;
 				//trace(this,"screen opened");
 				resumeLerping();
 				switchLerpMode("ENTER");
@@ -57,6 +55,7 @@
 		
 		public function closeScreen(event:ScreenEvent):void {
 			if(this.getScreenID() == "[object "+event.screenID+"]"){
+				isActive = false;
 				resumeLerping();
 				//trace(this,"screen closed");
 				switchLerpMode("EXIT");
@@ -65,7 +64,6 @@
 		}
 		
 		public function updateLerpPoints():void{
-			trace(lerpMode);
 			if(lerpMode == "ENTER"){
 				setDesiredLerpPoint(300,200);
 			}else if(lerpMode == "EXIT"){
@@ -159,16 +157,17 @@
 					//trace("6");
 					break;
 			}
-			
 		}
 		
 		public override function stageClickHandler(event:MouseEvent):void{
 			//click anything else
 			if (event.target.name.indexOf("hitbox") != -1) {
-				trace(event.target.name);
+				//trace(event.target.name);
 			}else{
-				Main.getStage().dispatchEvent(new ScreenEvent("SCREEN_CLOSE","EditMenu"));
-				Main.getStage().dispatchEvent(new ScreenEvent("BUILD_ABORT","Statue_base"));
+				if(isActive == true){
+					Main.getStage().dispatchEvent(new ScreenEvent("SCREEN_CLOSE","EditMenu"));
+					Main.getStage().dispatchEvent(new ScreenEvent("BUILD_ABORT","Statue_base"));
+				}
 			}
 		}
 		

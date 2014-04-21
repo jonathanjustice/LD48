@@ -12,9 +12,12 @@
 		private var currency_2:int=0;
 		//coin
 		private var currency_3:int=0;
+		private var currencyArray:Array;
+		private var buildRequirements:BuildRequirements = new BuildRequirements();
 		public function Leader_Title(){
 			arrangeScreen();
 			setUp();
+			trace(buildRequirements);
 		}
 		
 		public function addCurrency(event:CurrencyEvent):void {
@@ -29,7 +32,10 @@
 					currency_3 += event.C_amount;;
 					break;
 			}
-			//updateResources();
+			currencyArray = [currency_1,currency_2,currency_3,0];
+			buildRequirements.setBuildStatus(currencyArray);
+			var buildPercent:Number = buildRequirements.getCurrentTotalStatus();
+			Main.getStage().dispatchEvent(new ScreenEvent("BUILD_PROGRESS","Statue_base","",buildPercent));
 		}
 		
 		public function deductCurrency(event:CurrencyEvent):void {
@@ -38,13 +44,14 @@
 					currency_1 -= event.C_amount;
 					break;
 				case "currency_FIRE":
-					currency_2 -= event.C_amount;;
+					currency_2 -= event.C_amount;
 					break;
 				case "currency_SQUISH":
-					currency_3 -= event.C_amount;;
+					currency_3 -= event.C_amount;
 					break;
 			}
-			updateResources();
+			currencyArray = [currency_1,currency_2,currency_3,0];
+			buildRequirements.setBuildStatus(currencyArray);
 		}
 		
 		public function updateLoop(e:Event):void{
@@ -59,10 +66,19 @@
 				current_txt_currency_1 += 1;
 			}
 			if(current_txt_currency_2 < currency_2){
-				current_txt_currency_2 += 2;
+				current_txt_currency_2 += 1;
 			}
 			if(current_txt_currency_3 < currency_3){
 				current_txt_currency_3 += 1;
+			}
+			if(current_txt_currency_1 > currency_1){
+				current_txt_currency_1 -= 1;
+			}
+			if(current_txt_currency_2 > currency_2){
+				current_txt_currency_2 -= 1;
+			}
+			if(current_txt_currency_3 > currency_3){
+				current_txt_currency_3 -= 1;
 			}
 			txt_currency_1.text = String(current_txt_currency_1);
 			txt_currency_2.text = String(current_txt_currency_2);
@@ -88,6 +104,7 @@
 		}
 		
 		private function arrangeScreen():void{
+			currencyArray = new Array();
 			this.y = -250;
 			stop();
 			setMultiplier(screenLerpX,screenLerpY);

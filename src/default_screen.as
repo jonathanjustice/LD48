@@ -21,6 +21,7 @@
 			setUp();
 			defineScreenID();
 			getScreenID();
+			trace("default screen");
 		}
 		
 		public function defineScreenID():void{
@@ -43,13 +44,6 @@
 				this.x += lerpAmountX;
 				var lerpAmountY:Number = (desiredY-this.y)*multiplierY;
 				this.y += lerpAmountY;
-				/*if(Math.abs(desiredX-this.x) < 1 && Math.abs(desiredY-this.y)){
-					this.x = desiredX;
-					this.y = desiredY;
-					lerpAmountX = 0;
-					lerpAmountY = 0;
-					pauseLerping();
-				}*/
 			}
 			if(Math.abs(desiredX-this.x) > 0){
 				resumeLerping();
@@ -240,9 +234,6 @@
 		}
 		*/
 		public function addScreenToUIContainer():void{
-			//trace(this);
-			//trace(Main);
-			//trace(Main.theStage);
 			Main.theStage.addChild(this);
 		}
 		
